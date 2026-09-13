@@ -1,0 +1,460 @@
+// ============================================
+// TARHAL — Main Application Logic
+// Shared across all pages
+// ============================================
+
+// ============== UTILITIES ==============
+
+/**
+ * Format price with currency
+ */
+function formatPrice(amount, currencyCode) {
+  const currency = currencyCode || (typeof getCurrency === 'function' ? getCurrency() : 'EGP');
+  const info = CURRENCIES[currency] || CURRENCIES.EGP;
+  const num = Number(amount || 0);
+  const formatted = num.toLocaleString('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+  return `${formatted} ${info.symbol}`;
+}
+
+/**
+ * Format date
+ */
+function formatDate(dateString, locale) {
+  if (!dateString) return '';
+  const loc = locale || (typeof getLocale === 'function' ? getLocale() : 'ar');
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return date.toLocaleDateString(loc === 'ar' ? 'ar-EG' : 'en-US', options);
+}
+
+/**
+ * Format date and time
+ */
+function formatDateTime(dateString, locale) {
+  if (!dateString) return '';
+  const loc = locale || (typeof getLocale === 'function' ? getLocale() : 'ar');
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+
+  const options = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+  return date.toLocaleDateString(loc === 'ar' ? 'ar-EG' : 'en-US', options);
+}
+
+/**
+ * Format time only
+ */
+function formatTime(dateString, locale) {
+  if (!dateString) return '';
+  const loc = locale || (typeof getLocale === 'function' ? getLocale() : 'ar');
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+
+  return date.toLocaleTimeString(loc === 'ar' ? 'ar-EG' : 'en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+/**
+ * Escape HTML to prevent XSS
+ */
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = String(str);
+  return div.innerHTML;
+}
+
+/**
+ * Get URL query parameter
+ */
+function getQueryParam(key) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(key);
+}
+
+/**
+ * Generate slug from text
+ */
+function slugify(text) {
+  return String(text)
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
+/**
+ * Show toast notification
+ */
+function showToast(message, type = 'info') {
+  const existing = document.getElementById('tarhal-toast');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'tarhal-toast';
+  toast.className = `tarhal-toast tarhal-toast-${type}`;
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: ${type === 'error' ? '#DC2626' : type === 'success' ? '#16A34A' : '#1E293B'};
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    z-index: 9999;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    max-width: 90%;
+    text-align: center;
+    animation: toastIn 0.3s ease-out;
+  `;
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = 'toastOut 0.3s ease-in';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ============== LOGO SVG ==============
+
+/**
+ * Returns the Tarhal logo as SVG string
+ */
+function getLogoSVG(size = 32, variant = 'default') {
+  const colors = variant === 'white'
+    ? { pin: '#FFFFFF', dot: '#FFFFFF', line: '#FFFFFF' }
+    : variant === 'dark'
+    ? { pin: '#1E293B', dot: '#1E293B', line: '#1E293B' }
+    : { pin: '#DC2626', dot: '#0F766E', line: '#14B8A6' };
+
+  return `
+    <svg width="${size}" height="${size * 0.4}" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+      <!-- Line -->
+      <line x1="35" y1="40" x2="165" y2="40" stroke="${colors.line}" stroke-width="3" stroke-linecap="round"/>
+      <!-- Left pin -->
+      <path d="M35 18 C42 18 48 24 48 31 C48 38 35 55 35 55 C35 55 22 38 22 31 C22 24 28 18 35 18 Z" fill="${colors.pin}"/>
+      <circle cx="35" cy="31" r="4" fill="#FFFFFF"/>
+      <!-- Center dot -->
+      <circle cx="100" cy="40" r="6" fill="${colors.dot}"/>
+      <!-- Right pin -->
+      <path d="M165 18 C172 18 178 24 178 31 C178 38 165 55 165 55 C165 55 152 38 152 31 C152 24 158 18 165 18 Z" fill="${colors.pin}"/>
+      <circle cx="165" cy="31" r="4" fill="#FFFFFF"/>
+    </svg>
+  `;
+}
+
+// ============== HEADER ==============
+
+/**
+ * Render the shared header
+ */
+function renderHeader(containerId = 'app-header') {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const locale = getLocale();
+  const isAr = locale === 'ar';
+  const isHomePage = window.location.pathname.endsWith('index.html') ||
+                     window.location.pathname === '/' ||
+                     window.location.pathname.endsWith('/tarhal/');
+
+  container.innerHTML = `
+    <header class="tarhal-header">
+      <div class="tarhal-header-inner">
+        <!-- Logo -->
+        <a href="index.html" class="tarhal-logo" aria-label="Tarhal Home">
+          ${getLogoSVG(90)}
+          <span class="tarhal-logo-text">${isAr ? 'ترحال' : 'Tarhal'}</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="tarhal-nav-desktop">
+          <a href="index.html">${t('nav.home')}</a>
+          <a href="trips.html">${t('nav.trips')}</a>
+        </nav>
+
+        <!-- Actions -->
+        <div class="tarhal-header-actions">
+          <button id="locale-toggle" class="tarhal-locale-btn" aria-label="Switch language">
+            ${isAr ? 'EN' : 'ع'}
+          </button>
+
+          <div id="auth-actions" class="tarhal-auth-actions">
+            <a href="login.html" class="tarhal-btn-text">${t('nav.login')}</a>
+            <a href="register.html" class="tarhal-btn-primary-sm">${t('nav.register')}</a>
+          </div>
+
+          <div id="user-actions" class="tarhal-user-actions" style="display:none;">
+            <a href="my-trips.html" class="tarhal-btn-text">${t('nav.myTrips')}</a>
+            <a href="dashboard.html" class="tarhal-btn-text">${t('nav.dashboard')}</a>
+            <button id="logout-btn" class="tarhal-btn-text">${t('nav.logout')}</button>
+          </div>
+
+          <button id="mobile-menu-btn" class="tarhal-mobile-menu-btn" aria-label="Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="tarhal-mobile-menu" style="display:none;">
+        <a href="index.html">${t('nav.home')}</a>
+        <a href="trips.html">${t('nav.trips')}</a>
+        <a href="my-trips.html">${t('nav.myTrips')}</a>
+        <a href="dashboard.html">${t('nav.dashboard')}</a>
+        <a href="login.html">${t('nav.login')}</a>
+        <a href="register.html">${t('nav.register')}</a>
+      </div>
+    </header>
+  `;
+
+  // Locale toggle
+  document.getElementById('locale-toggle')?.addEventListener('click', () => {
+    const newLocale = getLocale() === 'ar' ? 'en' : 'ar';
+    setLocale(newLocale);
+    window.location.reload();
+  });
+
+  // Mobile menu toggle
+  document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+    const menu = document.getElementById('mobile-menu');
+    if (menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+  });
+}
+
+// ============== FOOTER ==============
+
+/**
+ * Render the shared footer
+ */
+function renderFooter(containerId = 'app-footer') {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const isAr = getLocale() === 'ar';
+
+  container.innerHTML = `
+    <footer class="tarhal-footer">
+      <div class="tarhal-footer-inner">
+        <div class="tarhal-footer-brand">
+          ${getLogoSVG(100)}
+          <div class="tarhal-footer-name">${isAr ? 'ترحال' : 'Tarhal'}</div>
+          <div class="tarhal-footer-tagline">${t('app.tagline')}</div>
+        </div>
+
+        <div class="tarhal-footer-cols">
+          <div class="tarhal-footer-col">
+            <h4>${t('nav.home')}</h4>
+            <a href="index.html">${t('nav.home')}</a>
+            <a href="trips.html">${t('nav.trips')}</a>
+          </div>
+          <div class="tarhal-footer-col">
+            <h4>${t('nav.login')}</h4>
+            <a href="login.html">${t('nav.login')}</a>
+            <a href="register.html">${t('nav.register')}</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tarhal-footer-bottom">
+        © ${new Date().getFullYear()} ${isAr ? 'ترحال' : 'Tarhal'}
+      </div>
+    </footer>
+  `;
+}
+
+// ============== AUTH STATE ==============
+
+/**
+ * Check current auth state (placeholder until Supabase is connected)
+ * For now, always returns null (not logged in)
+ */
+function getCurrentUser() {
+  // TODO: Will be replaced with real Supabase auth
+  const mockUser = localStorage.getItem('tarhal_mock_user');
+  return mockUser ? JSON.parse(mockUser) : null;
+}
+
+/**
+ * Update header based on auth state
+ */
+function updateAuthUI() {
+  const user = getCurrentUser();
+  const authActions = document.getElementById('auth-actions');
+  const userActions = document.getElementById('user-actions');
+
+  if (!authActions || !userActions) return;
+
+  if (user) {
+    authActions.style.display = 'none';
+    userActions.style.display = 'flex';
+  } else {
+    authActions.style.display = 'flex';
+    userActions.style.display = 'none';
+  }
+
+  // Logout button
+  document.getElementById('logout-btn')?.addEventListener('click', () => {
+    localStorage.removeItem('tarhal_mock_user');
+    showToast(t('auth.logoutSuccess'));
+    setTimeout(() => window.location.href = 'index.html', 800);
+  });
+}
+
+// ============== INITIALIZATION ==============
+
+/**
+ * Initialize common app features on every page
+ */
+function initApp(options = {}) {
+  const {
+    withHeader = true,
+    withFooter = true,
+    withAuthCheck = true,
+  } = options;
+
+  // Apply locale direction
+  const locale = getLocale();
+  document.documentElement.lang = locale;
+  document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
+
+  // Render header
+  if (withHeader) renderHeader();
+
+  // Render footer
+  if (withFooter) renderFooter();
+
+  // Update auth UI
+  if (withAuthCheck) updateAuthUI();
+}
+
+// ============== MOCK DATA (للمرحلة القادمة) ==============
+
+/**
+ * Temporary mock data - will be replaced with Supabase
+ */
+const MOCK_TRIPS = [
+  {
+    id: '1',
+    slug: 'umrah-7-days',
+    title_ar: 'عمرة 7 أيام من القاهرة',
+    title_en: '7-Day Umrah from Cairo',
+    description_ar: 'رحلة عمرة شاملة مع فندق 5 نجوم قريب من الحرم.',
+    description_en: 'Complete Umrah trip with 5-star hotel near Haram.',
+    cover_url: '',
+    base_price: 30000,
+    currency: 'EGP',
+    days: 7,
+    nights: 6,
+    destination_country: 'SA',
+    trip_type: 'umrah',
+    rating_avg: 4.7,
+    seats_available: 12,
+  },
+  {
+    id: '2',
+    slug: 'turkey-adventure',
+    title_ar: 'مغامرة في تركيا 5 أيام',
+    title_en: '5-Day Turkey Adventure',
+    description_ar: 'رحلة سياحية لاكتشاف إسطنبول وطرابزون.',
+    description_en: 'Tour to discover Istanbul and Trabzon.',
+    cover_url: '',
+    base_price: 22000,
+    currency: 'EGP',
+    days: 5,
+    nights: 4,
+    destination_country: 'TR',
+    trip_type: 'adventure',
+    rating_avg: 4.5,
+    seats_available: 8,
+  },
+  {
+    id: '3',
+    slug: 'honeymoon-maldives',
+    title_ar: 'شهر عسل في المالديف 6 أيام',
+    title_en: '6-Day Maldives Honeymoon',
+    description_ar: 'إقامة في فيلا على الماء مع أنشطة رومانسية.',
+    description_en: 'Water villa stay with romantic activities.',
+    cover_url: '',
+    base_price: 65000,
+    currency: 'EGP',
+    days: 6,
+    nights: 5,
+    destination_country: 'MV',
+    trip_type: 'honeymoon',
+    rating_avg: 5.0,
+    seats_available: 4,
+  },
+  {
+    id: '4',
+    slug: 'hajj-package',
+    title_ar: 'باقة حج 12 يوم',
+    title_en: '12-Day Hajj Package',
+    description_ar: 'برنامج حج كامل مع مرشد وإقامة قريبة من المشاعر.',
+    description_en: 'Full Hajj program with guide and close accommodation.',
+    cover_url: '',
+    base_price: 145000,
+    currency: 'EGP',
+    days: 12,
+    nights: 11,
+    destination_country: 'SA',
+    trip_type: 'hajj',
+    rating_avg: 4.9,
+    seats_available: 20,
+  },
+  {
+    id: '5',
+    slug: 'family-dubai',
+    title_ar: 'رحلة عائلية لدبي 4 أيام',
+    title_en: '4-Day Family Trip to Dubai',
+    description_ar: 'رحلة عائلية تشمل حدائق الألعاب والتسوق.',
+    description_en: 'Family trip with theme parks and shopping.',
+    cover_url: '',
+    base_price: 28000,
+    currency: 'EGP',
+    days: 4,
+    nights: 3,
+    destination_country: 'AE',
+    trip_type: 'family',
+    rating_avg: 4.6,
+    seats_available: 15,
+  },
+  {
+    id: '6',
+    slug: 'cruise-mediterranean',
+    title_ar: 'كروز البحر المتوسط 8 أيام',
+    title_en: '8-Day Mediterranean Cruise',
+    description_ar: 'كروز فاخر يمر على إيطاليا واليونان.',
+    description_en: 'Luxury cruise through Italy and Greece.',
+    cover_url: '',
+    base_price: 89000,
+    currency: 'EGP',
+    days: 8,
+    nights: 7,
+    destination_country: 'IT',
+    trip_type: 'cruise',
+    rating_avg: 4.8,
+    seats_available: 6,
+  },
+];
