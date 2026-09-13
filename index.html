@@ -56,7 +56,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-      max-height: 260px;
+      max-height: 280px;
       overflow-y: auto;
       z-index: 1000;
       display: none;
@@ -89,14 +89,6 @@
       color: var(--text-gray);
       font-size: 13px;
     }
-    .tarhal-dd-loading {
-      padding: 12px;
-      text-align: center;
-      color: var(--text-gray);
-      font-size: 13px;
-    }
-
-    /* Selected state */
     .tarhal-field-wrap.has-value .tarhal-input {
       border-color: var(--primary);
       background: rgba(15,118,110,0.04);
@@ -114,6 +106,7 @@
   <header id="app-header"></header>
 
   <main>
+    <!-- ============== HERO ============== -->
     <section class="tarhal-hero">
       <div class="tarhal-container">
         <h1 id="hero-title">كل رحلات العالم في مكان واحد</h1>
@@ -162,6 +155,7 @@
       </div>
     </section>
 
+    <!-- ============== TRIP TYPES ============== -->
     <section class="tarhal-section">
       <div class="tarhal-container">
         <div class="tarhal-section-header">
@@ -171,6 +165,7 @@
       </div>
     </section>
 
+    <!-- ============== HOW IT WORKS ============== -->
     <section class="tarhal-section" style="background: var(--bg-light);">
       <div class="tarhal-container">
         <div class="tarhal-section-header">
@@ -180,6 +175,7 @@
       </div>
     </section>
 
+    <!-- ============== FEATURED TRIPS ============== -->
     <section class="tarhal-section">
       <div class="tarhal-container">
         <div class="tarhal-section-header">
@@ -198,6 +194,7 @@
 
   <footer id="app-footer"></footer>
 
+  <!-- ============== SCRIPTS ============== -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/data.js"></script>
   <script src="assets/js/i18n.js"></script>
@@ -211,20 +208,15 @@
       initApp();
       updateStaticTexts();
 
-      // Load countries + detect currency
-      await loadCountries();
       await initUserCurrency();
 
-      // Render sections
       renderTripTypes();
       renderHowItWorks();
       renderFeaturedTrips();
 
-      // Autocomplete
       new TarhalAutocomplete('from-input', 'from-dd', 'from-wrap');
       new TarhalAutocomplete('to-input', 'to-dd', 'to-wrap');
 
-      // Search submit
       document.getElementById('search-form').addEventListener('submit', handleSearch);
     });
 
@@ -232,11 +224,11 @@
     // CURRENCY DETECTION
     // ============================================
     async function initUserCurrency() {
-      if (localStorage.getItem('currency')) return; // already set
-      const detected = await detectUserCountry();
-      if (detected && detected.currency) {
-        setCurrency(detected.currency);
-      }
+      if (localStorage.getItem('currency')) return;
+      try {
+        const detected = await detectUserCountry();
+        if (detected && detected.currency) setCurrency(detected.currency);
+      } catch (e) { /* ignore */ }
     }
 
     // ============================================
@@ -265,11 +257,9 @@
         this.input = document.getElementById(inputId);
         this.dd = document.getElementById(ddId);
         this.wrap = document.getElementById(wrapId);
-        this.selectedCountry = null;
-        this.selectedCity = null;
-        this.stage = 'country'; // 'country' | 'city'
         this.items = [];
         this.activeIndex = -1;
+        this._debounce = null;
         this.init();
       }
 
@@ -283,92 +273,46 @@
       }
 
       async onFocus() {
-        if (this.stage === 'city' && this.selectedCountry) {
-          await this.showCities('');
-        } else if (!this.input.value) {
-          await this.showCountries('');
-        }
+        if (!this.input.value) await this.showResults('');
       }
 
-      async onInput() {
-        const q = this.input.value.trim().toLowerCase();
+      onInput() {
+        clearTimeout(this._debounce);
+        this._debounce = setTimeout(async () => {
+          const q = this.input.value.trim();
+          if (q.length === 0) { this.close(); return; }
+          await this.showResults(q);
+        }, 120);
+      }
 
-        // If user modifies after picking a city, reset
-        if (this.selectedCity && this.input.value !== this.selectedCity.displayName) {
-          this.selectedCity = null;
-        }
-        if (this.selectedCountry && !this.input.value.startsWith(this.selectedCountry.displayName)) {
-          // user typed something else
-          if (this.stage === 'city') {
-            this.stage = 'country';
-            this.selectedCountry = null;
-            this.wrap.classList.remove('has-value');
+      async showResults(query) {
+        this.dd.innerHTML = '<div class="tarhal-dd-empty">...</div>';
+        this.dd.classList.add('open');
+
+        try {
+          if (query.length === 0) {
+            const isAr = isRTL();
+            this.items = COUNTRIES_DB.slice(0, 20).map(c => ({
+              type: 'country',
+              code: c.code,
+              flag: c.flag,
+              name: isAr ? c.ar : c.en,
+              sub: isAr ? c.en : c.ar,
+              displayName: `${c.flag} ${isAr ? c.ar : c.en}`,
+            }));
+          } else {
+            this.items = await searchAll(query);
           }
+        } catch (e) {
+          this.items = [];
         }
-
-        if (this.stage === 'city' && this.selectedCountry) {
-          await this.showCities(q);
-        } else {
-          await this.showCountries(q);
-        }
-      }
-
-      async showCountries(query) {
-        this.dd.innerHTML = '<div class="tarhal-dd-loading">...</div>';
-        this.dd.classList.add('open');
-
-        const countries = await loadCountries();
-        const q = query.toLowerCase();
-
-        const filtered = (q
-          ? countries.filter(c =>
-              c.nameEn.toLowerCase().includes(q) ||
-              c.nameAr.includes(query) ||
-              c.code.toLowerCase() === q
-            )
-          : countries
-        ).slice(0, 25);
-
-        this.items = filtered.map(c => ({
-          type: 'country',
-          code: c.code,
-          flag: c.flag,
-          name: isRTL() ? c.nameAr : c.nameEn,
-          sub: isRTL() ? c.nameEn : c.nameAr,
-          displayName: `${c.flag} ${isRTL() ? c.nameAr : c.nameEn}`,
-          raw: c,
-        }));
-
-        this.render();
-      }
-
-      async showCities(query) {
-        this.dd.innerHTML = '<div class="tarhal-dd-loading">جاري تحميل المدن…</div>';
-        this.dd.classList.add('open');
-
-        const cities = await loadCities(this.selectedCountry.code);
-        const q = query.toLowerCase();
-
-        const filtered = (q
-          ? cities.filter(c => c.name.toLowerCase().includes(q))
-          : cities
-        ).slice(0, 40);
-
-        this.items = filtered.map(c => ({
-          type: 'city',
-          name: c.name,
-          flag: this.selectedCountry.flag,
-          sub: isRTL() ? this.selectedCountry.nameAr : this.selectedCountry.nameEn,
-          displayName: `${this.selectedCountry.flag} ${isRTL() ? this.selectedCountry.nameAr : this.selectedCountry.nameEn} — ${c.name}`,
-          raw: c,
-        }));
 
         this.render();
       }
 
       render() {
         if (this.items.length === 0) {
-          this.dd.innerHTML = `<div class="tarhal-dd-empty">لا توجد نتائج</div>`;
+          this.dd.innerHTML = `<div class="tarhal-dd-empty">لا توجد نتائج — جرب دولة أو مدينة تانية</div>`;
           return;
         }
 
@@ -383,9 +327,7 @@
         `).join('');
 
         this.dd.querySelectorAll('.tarhal-dd-item').forEach(el => {
-          el.addEventListener('click', () => {
-            this.select(Number(el.dataset.index));
-          });
+          el.addEventListener('click', () => this.select(Number(el.dataset.index)));
         });
 
         this.activeIndex = -1;
@@ -394,21 +336,9 @@
       select(index) {
         const item = this.items[index];
         if (!item) return;
-
-        if (item.type === 'country') {
-          this.selectedCountry = item.raw;
-          this.selectedCity = null;
-          this.input.value = item.displayName;
-          this.stage = 'city';
-          this.wrap.classList.add('has-value');
-          // Immediately show cities
-          this.showCities('');
-        } else if (item.type === 'city') {
-          this.selectedCity = item.raw;
-          this.input.value = item.displayName;
-          this.wrap.classList.add('has-value');
-          this.close();
-        }
+        this.input.value = item.displayName;
+        this.wrap.classList.add('has-value');
+        this.close();
       }
 
       onKey(e) {
