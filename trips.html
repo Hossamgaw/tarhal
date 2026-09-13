@@ -23,13 +23,9 @@
       gap: 8px;
     }
     @media (min-width: 640px) {
-      .top-search-grid {
-        grid-template-columns: 1fr 1fr 1fr auto;
-      }
+      .top-search-grid { grid-template-columns: 1fr 1fr 1fr auto; }
     }
-    .ts-field-wrap {
-      position: relative;
-    }
+    .ts-field-wrap { position: relative; }
     .ts-input {
       width: 100%;
       padding: 10px 14px;
@@ -103,6 +99,7 @@
       color: var(--text-dark);
       font-size: 15px;
       cursor: pointer;
+      font-family: inherit;
     }
     .mobile-filter-toggle:hover {
       border-color: var(--primary);
@@ -120,9 +117,7 @@
       padding: 8px 0 40px;
     }
     @media (min-width: 900px) {
-      .trips-layout {
-        grid-template-columns: 280px 1fr;
-      }
+      .trips-layout { grid-template-columns: 280px 1fr; }
     }
 
     /* ===== FILTERS PANEL ===== */
@@ -169,8 +164,7 @@
       padding: 6px 0;
       color: var(--text-medium);
     }
-    .filter-check input[type="checkbox"],
-    .filter-check input[type="radio"] {
+    .filter-check input[type="checkbox"] {
       width: 18px;
       height: 18px;
       accent-color: var(--primary);
@@ -178,27 +172,134 @@
       flex-shrink: 0;
     }
 
-    /* ===== PRICE SLIDER ===== */
-    .price-slider-wrap {
-      padding: 4px 0;
-    }
-    .price-display {
+    /* ===== SHARED SLIDER STYLES ===== */
+    .slider-current {
       display: flex;
+      align-items: center;
       justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 14px;
+      padding: 8px 12px;
+      background: rgba(15,118,110,0.06);
+      border-radius: var(--radius);
+      gap: 6px;
+    }
+    .slider-current-val {
+      white-space: nowrap;
+    }
+    .slider-current-sep {
+      color: var(--text-gray);
+      font-weight: 400;
+      font-size: 12px;
+    }
+    .slider-stack {
+      position: relative;
+    }
+    .range-input {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      outline: none;
+      margin: 4px 0;
+      cursor: pointer;
+    }
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--primary);
+      cursor: grab;
+      box-shadow: 0 2px 6px rgba(15,118,110,0.3);
+    }
+    .range-input::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--primary);
+      cursor: grab;
+      box-shadow: 0 2px 6px rgba(15,118,110,0.3);
+    }
+    .range-input::-webkit-slider-thumb:active {
+      cursor: grabbing;
+      transform: scale(1.1);
+    }
+    .range-input.dual {
+      pointer-events: none;
+    }
+    .range-input.dual::-webkit-slider-thumb {
+      pointer-events: auto;
+    }
+    .range-input.dual::-moz-range-thumb {
+      pointer-events: auto;
+    }
+
+    /* ===== RATING SLIDER ===== */
+    .rating-stars-display {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 12px;
+      font-size: 26px;
+      line-height: 1;
+    }
+    .rating-star {
+      color: var(--border);
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+    .rating-star.active {
+      color: #F59E0B;
+      transform: scale(1.05);
+    }
+    .rating-current {
+      text-align: center;
       font-size: 13px;
       font-weight: 600;
       color: var(--primary);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      min-height: 20px;
     }
-    .price-range-input {
+    .rating-range-input {
+      -webkit-appearance: none;
+      appearance: none;
       width: 100%;
-      margin: 6px 0;
-      accent-color: var(--primary);
-      cursor: pointer;
       height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      outline: none;
+      margin: 4px 0;
+      cursor: pointer;
     }
-    .price-range-input:focus { outline: none; }
-    .price-marks {
+    .rating-range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #F59E0B;
+      cursor: grab;
+      box-shadow: 0 2px 6px rgba(245,158,11,0.3);
+    }
+    .rating-range-input::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #F59E0B;
+      cursor: grab;
+      box-shadow: 0 2px 6px rgba(245,158,11,0.3);
+    }
+
+    .slider-marks {
       display: flex;
       justify-content: space-between;
       font-size: 11px;
@@ -248,19 +349,15 @@
     <!-- ===== TOP SEARCH ===== -->
     <div class="top-search-bar">
       <form class="top-search-grid" id="top-search-form" autocomplete="off">
-
         <div class="ts-field-wrap" id="ts-from-wrap">
           <input type="text" id="q-from" class="ts-input" placeholder="من — الدولة أو المدينة" autocomplete="off">
           <div class="ts-dd" id="ts-from-dd"></div>
         </div>
-
         <div class="ts-field-wrap" id="ts-to-wrap">
           <input type="text" id="q-to" class="ts-input" placeholder="إلى — الدولة أو المدينة" autocomplete="off">
           <div class="ts-dd" id="ts-to-dd"></div>
         </div>
-
         <input type="date" id="q-date" class="ts-input">
-
         <button type="submit" class="tarhal-btn tarhal-btn-primary">ابحث</button>
       </form>
     </div>
@@ -285,39 +382,50 @@
           <div class="filter-options" id="type-filters"></div>
         </div>
 
+        <!-- PRICE SLIDER -->
         <div class="filter-group">
           <div class="filter-title">السعر</div>
-          <div class="price-slider-wrap">
-            <div class="price-display">
-              <span id="price-min-display">—</span>
-              <span id="price-max-display">—</span>
-            </div>
-            <input type="range" class="price-range-input" id="price-min-range" min="0" max="100" value="0">
-            <input type="range" class="price-range-input" id="price-max-range" min="0" max="100" value="100">
-            <div class="price-marks">
-              <span id="price-lowest-mark">0</span>
-              <span id="price-highest-mark">0</span>
-            </div>
+          <div class="slider-current">
+            <span class="slider-current-val" id="price-min-display">—</span>
+            <span class="slider-current-sep">←</span>
+            <span class="slider-current-val" id="price-max-display">—</span>
+          </div>
+          <div class="slider-stack">
+            <input type="range" class="range-input dual" id="price-min-range" min="0" max="100" value="0">
+            <input type="range" class="range-input dual" id="price-max-range" min="0" max="100" value="100">
           </div>
         </div>
 
+        <!-- DURATION SLIDER -->
         <div class="filter-group">
-          <div class="filter-title">المدة (أيام)</div>
-          <div class="filter-options">
-            <label class="filter-check"><input type="radio" name="duration" value=""> الكل</label>
-            <label class="filter-check"><input type="radio" name="duration" value="1-5"> 1 - 5 أيام</label>
-            <label class="filter-check"><input type="radio" name="duration" value="6-10"> 6 - 10 أيام</label>
-            <label class="filter-check"><input type="radio" name="duration" value="11-999"> أكثر من 10</label>
+          <div class="filter-title">المدة</div>
+          <div class="slider-current">
+            <span class="slider-current-val" id="days-min-display">—</span>
+            <span class="slider-current-sep">←</span>
+            <span class="slider-current-val" id="days-max-display">—</span>
+          </div>
+          <div class="slider-stack">
+            <input type="range" class="range-input dual" id="days-min-range" min="1" max="30" value="1">
+            <input type="range" class="range-input dual" id="days-max-range" min="1" max="30" value="30">
+          </div>
+          <div class="slider-marks">
+            <span id="days-lowest-mark">1</span>
+            <span id="days-highest-mark">30</span>
           </div>
         </div>
 
+        <!-- RATING SLIDER -->
         <div class="filter-group">
           <div class="filter-title">التقييم</div>
-          <div class="filter-options">
-            <label class="filter-check"><input type="radio" name="rating" value=""> الكل</label>
-            <label class="filter-check"><input type="radio" name="rating" value="4"> ⭐ 4+</label>
-            <label class="filter-check"><input type="radio" name="rating" value="4.5"> ⭐ 4.5+</label>
+          <div class="rating-stars-display" id="rating-stars-display">
+            <span class="rating-star" data-star="1">★</span>
+            <span class="rating-star" data-star="2">★</span>
+            <span class="rating-star" data-star="3">★</span>
+            <span class="rating-star" data-star="4">★</span>
+            <span class="rating-star" data-star="5">★</span>
           </div>
+          <div class="rating-current" id="rating-current">الكل</div>
+          <input type="range" class="rating-range-input" id="rating-range" min="0" max="5" step="0.5" value="0">
         </div>
 
         <button type="button" class="tarhal-btn tarhal-btn-outline tarhal-btn-block" id="clear-filters">مسح الفلاتر</button>
@@ -326,7 +434,6 @@
 
       <!-- ===== RESULTS ===== -->
       <section>
-
         <div class="results-header">
           <div class="results-count">
             <strong id="results-number">0</strong> نتيجة
@@ -336,11 +443,12 @@
             <option value="price-low">السعر: من الأقل للأعلى</option>
             <option value="price-high">السعر: من الأعلى للأقل</option>
             <option value="rating">الأعلى تقييمًا</option>
+            <option value="days-low">المدة: الأقصر أولاً</option>
+            <option value="days-high">المدة: الأطول أولاً</option>
           </select>
         </div>
 
         <div class="tarhal-grid tarhal-grid-3" id="trips-grid"></div>
-
       </section>
 
     </div>
@@ -361,11 +469,13 @@
     let allTrips = [];
     let filteredTrips = [];
     let priceBounds = { min: 0, max: 100000 };
+    let daysBounds = { min: 1, max: 30 };
     let filters = {
       types: [],
       minPrice: null,
       maxPrice: null,
-      duration: '',
+      minDays: null,
+      maxDays: null,
       rating: null,
       from: '',
       to: '',
@@ -380,6 +490,8 @@
       loadInitialData();
       renderTypeFilters();
       setupPriceSlider();
+      setupDaysSlider();
+      setupRatingSlider();
       setupFilterEvents();
       setupSearchBar();
       setupTopAutocomplete();
@@ -387,7 +499,7 @@
     });
 
     // ============================================
-    // READ QUERY PARAMS + LOAD
+    // LOAD
     // ============================================
     function loadInitialData() {
       const params = new URLSearchParams(window.location.search);
@@ -405,17 +517,19 @@
 
       allTrips = [...MOCK_TRIPS];
 
-      // Compute price bounds from all trips
       if (allTrips.length > 0) {
         const prices = allTrips.map(t => t.base_price);
+        const daysArr = allTrips.map(t => t.days);
+
         priceBounds.min = Math.min(...prices);
         priceBounds.max = Math.max(...prices);
+
+        daysBounds.min = Math.max(1, Math.min(...daysArr));
+        daysBounds.max = Math.max(...daysArr);
       }
 
-      // Set page title if type filter
       if (type) {
-        const tt = t('tripTypes.' + type);
-        document.getElementById('page-title').textContent = tt;
+        document.getElementById('page-title').textContent = t('tripTypes.' + type);
       }
     }
 
@@ -445,31 +559,14 @@
       const maxRange = document.getElementById('price-max-range');
       const minDisplay = document.getElementById('price-min-display');
       const maxDisplay = document.getElementById('price-max-display');
-      const lowestMark = document.getElementById('price-lowest-mark');
-      const highestMark = document.getElementById('price-highest-mark');
-
-      // Use 0-100 scale, map to actual price bounds
-      minRange.value = 0;
-      maxRange.value = 100;
-
-      minDisplay.textContent = formatPrice(priceBounds.min);
-      maxDisplay.textContent = formatPrice(priceBounds.max);
-      lowestMark.textContent = formatPrice(priceBounds.min);
-      highestMark.textContent = formatPrice(priceBounds.max);
 
       function update() {
         let lo = Number(minRange.value);
         let hi = Number(maxRange.value);
 
-        // Prevent crossing
         if (lo > hi - 5) {
-          if (document.activeElement === minRange) {
-            lo = hi - 5;
-            minRange.value = lo;
-          } else {
-            hi = lo + 5;
-            maxRange.value = hi;
-          }
+          if (document.activeElement === minRange) { lo = hi - 5; minRange.value = lo; }
+          else { hi = lo + 5; maxRange.value = hi; }
         }
 
         const priceLo = Math.round(priceBounds.min + (priceBounds.max - priceBounds.min) * (lo / 100));
@@ -478,7 +575,6 @@
         minDisplay.textContent = formatPrice(priceLo);
         maxDisplay.textContent = formatPrice(priceHi);
 
-        // Apply filter only if not at extremes
         filters.minPrice = (lo > 0) ? priceLo : null;
         filters.maxPrice = (hi < 100) ? priceHi : null;
 
@@ -488,12 +584,104 @@
       minRange.addEventListener('input', update);
       maxRange.addEventListener('input', update);
 
-      // Store for reset
       window._resetPriceSlider = () => {
         minRange.value = 0;
         maxRange.value = 100;
         minDisplay.textContent = formatPrice(priceBounds.min);
         maxDisplay.textContent = formatPrice(priceBounds.max);
+        filters.minPrice = null;
+        filters.maxPrice = null;
+      };
+
+      minDisplay.textContent = formatPrice(priceBounds.min);
+      maxDisplay.textContent = formatPrice(priceBounds.max);
+    }
+
+    // ============================================
+    // DAYS SLIDER
+    // ============================================
+    function setupDaysSlider() {
+      const minRange = document.getElementById('days-min-range');
+      const maxRange = document.getElementById('days-max-range');
+      const minDisplay = document.getElementById('days-min-display');
+      const maxDisplay = document.getElementById('days-max-display');
+      const lowestMark = document.getElementById('days-lowest-mark');
+      const highestMark = document.getElementById('days-highest-mark');
+
+      minRange.min = daysBounds.min;
+      minRange.max = daysBounds.max;
+      minRange.value = daysBounds.min;
+
+      maxRange.min = daysBounds.min;
+      maxRange.max = daysBounds.max;
+      maxRange.value = daysBounds.max;
+
+      lowestMark.textContent = daysBounds.min;
+      highestMark.textContent = daysBounds.max;
+
+      function update() {
+        let lo = Number(minRange.value);
+        let hi = Number(maxRange.value);
+
+        if (lo > hi - 1) {
+          if (document.activeElement === minRange) { lo = hi - 1; minRange.value = lo; }
+          else { hi = lo + 1; maxRange.value = hi; }
+        }
+
+        minDisplay.textContent = lo + ' يوم';
+        maxDisplay.textContent = hi + ' يوم';
+
+        filters.minDays = (lo > daysBounds.min) ? lo : null;
+        filters.maxDays = (hi < daysBounds.max) ? hi : null;
+
+        applyFiltersAndRender();
+      }
+
+      minRange.addEventListener('input', update);
+      maxRange.addEventListener('input', update);
+
+      window._resetDaysSlider = () => {
+        minRange.value = daysBounds.min;
+        maxRange.value = daysBounds.max;
+        minDisplay.textContent = daysBounds.min + ' يوم';
+        maxDisplay.textContent = daysBounds.max + ' يوم';
+        filters.minDays = null;
+        filters.maxDays = null;
+      };
+
+      minDisplay.textContent = daysBounds.min + ' يوم';
+      maxDisplay.textContent = daysBounds.max + ' يوم';
+    }
+
+    // ============================================
+    // RATING SLIDER
+    // ============================================
+    function setupRatingSlider() {
+      const range = document.getElementById('rating-range');
+      const current = document.getElementById('rating-current');
+      const stars = document.querySelectorAll('#rating-stars-display .rating-star');
+
+      function update() {
+        const val = Number(range.value);
+
+        stars.forEach(star => {
+          const starVal = Number(star.dataset.star);
+          star.classList.toggle('active', starVal <= val);
+        });
+
+        current.textContent = val === 0 ? 'الكل' : `⭐ ${val} فأكثر`;
+
+        filters.rating = val > 0 ? val : null;
+        applyFiltersAndRender();
+      }
+
+      range.addEventListener('input', update);
+
+      window._resetRatingSlider = () => {
+        range.value = 0;
+        stars.forEach(s => s.classList.remove('active'));
+        current.textContent = 'الكل';
+        filters.rating = null;
       };
     }
 
@@ -509,32 +697,19 @@
         });
       });
 
-      document.querySelectorAll('input[name="duration"]').forEach(r => {
-        r.addEventListener('change', (e) => {
-          filters.duration = e.target.value;
-          applyFiltersAndRender();
-        });
-      });
-
-      document.querySelectorAll('input[name="rating"]').forEach(r => {
-        r.addEventListener('change', (e) => {
-          filters.rating = e.target.value ? Number(e.target.value) : null;
-          applyFiltersAndRender();
-        });
-      });
-
       document.getElementById('sort-select').addEventListener('change', () => {
         applyFiltersAndRender();
       });
 
       document.getElementById('clear-filters').addEventListener('click', () => {
-        filters = { types: [], minPrice: null, maxPrice: null, duration: '', rating: null, from: '', to: '', date: '' };
+        filters = { types: [], minPrice: null, maxPrice: null, minDays: null, maxDays: null, rating: null, from: '', to: '', date: '' };
         document.querySelectorAll('#type-filters input').forEach(cb => cb.checked = false);
-        document.querySelectorAll('input[name="duration"], input[name="rating"]').forEach(r => r.checked = r.value === '');
         document.getElementById('q-from').value = '';
         document.getElementById('q-to').value = '';
         document.getElementById('q-date').value = '';
         if (window._resetPriceSlider) window._resetPriceSlider();
+        if (window._resetDaysSlider) window._resetDaysSlider();
+        if (window._resetRatingSlider) window._resetRatingSlider();
         applyFiltersAndRender();
       });
 
@@ -574,7 +749,6 @@
         this._debounce = null;
         this.init();
       }
-
       init() {
         this.input.addEventListener('focus', () => this.onFocus());
         this.input.addEventListener('input', () => this.onInput());
@@ -583,11 +757,9 @@
           if (!this.wrap.contains(e.target)) this.close();
         });
       }
-
       async onFocus() {
         if (!this.input.value) await this.showResults('');
       }
-
       onInput() {
         clearTimeout(this._debounce);
         this._debounce = setTimeout(async () => {
@@ -596,18 +768,14 @@
           await this.showResults(q);
         }, 120);
       }
-
       async showResults(query) {
         this.dd.innerHTML = '<div class="ts-dd-empty">...</div>';
         this.dd.classList.add('open');
-
         try {
           if (query.length === 0) {
             const isAr = isRTL();
             this.items = COUNTRIES_DB.slice(0, 20).map(c => ({
-              type: 'country',
-              code: c.code,
-              flag: c.flag,
+              type: 'country', code: c.code, flag: c.flag,
               name: isAr ? c.ar : c.en,
               sub: isAr ? c.en : c.ar,
               displayName: `${c.flag} ${isAr ? c.ar : c.en}`,
@@ -615,19 +783,14 @@
           } else {
             this.items = await searchAll(query);
           }
-        } catch (e) {
-          this.items = [];
-        }
-
+        } catch (e) { this.items = []; }
         this.render();
       }
-
       render() {
         if (this.items.length === 0) {
           this.dd.innerHTML = `<div class="ts-dd-empty">لا توجد نتائج</div>`;
           return;
         }
-
         this.dd.innerHTML = this.items.map((item, i) => `
           <div class="ts-dd-item" data-index="${i}">
             <span class="ts-dd-flag">${item.flag || '📍'}</span>
@@ -637,26 +800,21 @@
             </span>
           </div>
         `).join('');
-
         this.dd.querySelectorAll('.ts-dd-item').forEach(el => {
           el.addEventListener('click', () => this.select(Number(el.dataset.index)));
         });
-
         this.activeIndex = -1;
       }
-
       select(index) {
         const item = this.items[index];
         if (!item) return;
         this.input.value = item.displayName;
         this.close();
       }
-
       onKey(e) {
         if (!this.dd.classList.contains('open')) return;
         const items = this.dd.querySelectorAll('.ts-dd-item');
         if (items.length === 0) return;
-
         if (e.key === 'ArrowDown') {
           e.preventDefault();
           this.activeIndex = Math.min(this.activeIndex + 1, items.length - 1);
@@ -666,19 +824,12 @@
           this.activeIndex = Math.max(this.activeIndex - 1, 0);
           this.highlight(items);
         } else if (e.key === 'Enter') {
-          if (this.activeIndex >= 0) {
-            e.preventDefault();
-            this.select(this.activeIndex);
-          }
-        } else if (e.key === 'Escape') {
-          this.close();
-        }
+          if (this.activeIndex >= 0) { e.preventDefault(); this.select(this.activeIndex); }
+        } else if (e.key === 'Escape') { this.close(); }
       }
-
       highlight(items) {
         items.forEach((el, i) => el.classList.toggle('active', i === this.activeIndex));
       }
-
       close() {
         this.dd.classList.remove('open');
         this.dd.innerHTML = '';
@@ -687,7 +838,7 @@
     }
 
     // ============================================
-    // APPLY FILTERS + RENDER
+    // APPLY FILTERS
     // ============================================
     function applyFiltersAndRender() {
       let list = [...allTrips];
@@ -699,10 +850,8 @@
       if (filters.minPrice != null) list = list.filter(t => t.base_price >= filters.minPrice);
       if (filters.maxPrice != null) list = list.filter(t => t.base_price <= filters.maxPrice);
 
-      if (filters.duration) {
-        const [min, max] = filters.duration.split('-').map(Number);
-        list = list.filter(t => t.days >= min && t.days <= max);
-      }
+      if (filters.minDays != null) list = list.filter(t => t.days >= filters.minDays);
+      if (filters.maxDays != null) list = list.filter(t => t.days <= filters.maxDays);
 
       if (filters.rating != null) {
         list = list.filter(t => (t.rating_avg || 0) >= filters.rating);
@@ -721,6 +870,8 @@
       if (sortBy === 'price-low') list.sort((a, b) => a.base_price - b.base_price);
       else if (sortBy === 'price-high') list.sort((a, b) => b.base_price - a.base_price);
       else if (sortBy === 'rating') list.sort((a, b) => (b.rating_avg || 0) - (a.rating_avg || 0));
+      else if (sortBy === 'days-low') list.sort((a, b) => a.days - b.days);
+      else if (sortBy === 'days-high') list.sort((a, b) => b.days - a.days);
       else list.sort((a, b) => Number(b.id) - Number(a.id));
 
       filteredTrips = list;
@@ -729,7 +880,7 @@
     }
 
     // ============================================
-    // RENDER TRIPS GRID
+    // RENDER TRIPS
     // ============================================
     function renderTrips() {
       const grid = document.getElementById('trips-grid');
