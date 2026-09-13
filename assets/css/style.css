@@ -1,0 +1,1087 @@
+/* ============================================
+   TARHAL — Main Stylesheet
+   Deep Teal Theme + IBM Plex Sans Arabic
+   ============================================ */
+
+/* ============== FONTS ============== */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ============== CSS VARIABLES ============== */
+:root {
+  /* Brand Colors */
+  --primary: #0F766E;
+  --primary-dark: #0B5A53;
+  --primary-light: #14B8A6;
+  --accent: #D4A574;
+  --accent-dark: #B8895A;
+  --red: #DC2626;
+
+  /* Text */
+  --text-dark: #1E293B;
+  --text-medium: #475569;
+  --text-gray: #64748B;
+  --text-light: #94A3B8;
+
+  /* Backgrounds */
+  --bg-white: #FFFFFF;
+  --bg-light: #F8FAFC;
+  --bg-gray: #F1F5F9;
+
+  /* Borders */
+  --border: #E2E8F0;
+  --border-dark: #CBD5E1;
+
+  /* Status */
+  --success: #16A34A;
+  --error: #DC2626;
+  --warning: #EA580C;
+  --info: #0284C7;
+
+  /* Layout */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 4px 6px rgba(0,0,0,0.07);
+  --shadow-md: 0 10px 15px rgba(0,0,0,0.08);
+  --shadow-lg: 0 20px 25px rgba(0,0,0,0.1);
+
+  /* Spacing */
+  --container-max: 1200px;
+  --container-padding: 16px;
+
+  /* Transition */
+  --transition: all 0.2s ease;
+
+  /* Font */
+  --font-ar: 'IBM Plex Sans Arabic', 'Cairo', sans-serif;
+  --font-en: 'Inter', sans-serif;
+}
+
+/* ============== RESET ============== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-ar);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-dark);
+  background: var(--bg-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+html[lang="en"] body {
+  font-family: var(--font-en);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* ============== CONTAINER ============== */
+.tarhal-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  width: 100%;
+}
+
+/* ============== HEADER ============== */
+.tarhal-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.tarhal-header-inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 12px var(--container-padding);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.tarhal-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.tarhal-logo svg {
+  display: block;
+}
+
+.tarhal-logo-text {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.02em;
+}
+
+.tarhal-nav-desktop {
+  display: none;
+  gap: 28px;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.tarhal-nav-desktop a {
+  font-weight: 500;
+  color: var(--text-medium);
+  font-size: 15px;
+  position: relative;
+}
+
+.tarhal-nav-desktop a:hover {
+  color: var(--primary);
+}
+
+.tarhal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tarhal-locale-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-gray);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.tarhal-locale-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.tarhal-auth-actions,
+.tarhal-user-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tarhal-btn-text {
+  padding: 8px 14px;
+  font-weight: 500;
+  color: var(--text-medium);
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.tarhal-btn-text:hover {
+  color: var(--primary);
+  background: var(--bg-light);
+}
+
+.tarhal-btn-primary-sm {
+  padding: 10px 18px;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.tarhal-btn-primary-sm:hover {
+  background: var(--primary-dark);
+  box-shadow: var(--shadow);
+}
+
+.tarhal-mobile-menu-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dark);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.tarhal-mobile-menu-btn:hover {
+  background: var(--bg-gray);
+}
+
+.tarhal-mobile-menu {
+  border-top: 1px solid var(--border);
+  background: var(--bg-white);
+  padding: 12px 0;
+}
+
+.tarhal-mobile-menu a {
+  display: block;
+  padding: 12px var(--container-padding);
+  font-weight: 500;
+  color: var(--text-medium);
+  border-bottom: 1px solid var(--border);
+}
+
+.tarhal-mobile-menu a:last-child {
+  border-bottom: none;
+}
+
+.tarhal-mobile-menu a:hover {
+  background: var(--bg-light);
+  color: var(--primary);
+}
+
+/* ============== BUTTONS ============== */
+.tarhal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 15px;
+  transition: var(--transition);
+  cursor: pointer;
+  border: none;
+  text-align: center;
+  white-space: nowrap;
+  min-height: 48px;
+}
+
+.tarhal-btn-primary {
+  background: var(--primary);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.tarhal-btn-primary:hover {
+  background: var(--primary-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.tarhal-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.tarhal-btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.tarhal-btn-outline:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.tarhal-btn-secondary {
+  background: var(--bg-gray);
+  color: var(--text-dark);
+}
+
+.tarhal-btn-secondary:hover {
+  background: var(--border);
+}
+
+.tarhal-btn-accent {
+  background: var(--accent);
+  color: white;
+}
+
+.tarhal-btn-accent:hover {
+  background: var(--accent-dark);
+}
+
+.tarhal-btn-danger {
+  background: var(--error);
+  color: white;
+}
+
+.tarhal-btn-danger:hover {
+  background: #B91C1C;
+}
+
+.tarhal-btn-block {
+  width: 100%;
+}
+
+.tarhal-btn-lg {
+  padding: 16px 32px;
+  font-size: 16px;
+  min-height: 56px;
+}
+
+/* ============== CARDS ============== */
+.tarhal-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: var(--transition);
+}
+
+.tarhal-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-dark);
+}
+
+.tarhal-card-flat {
+  background: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+/* Trip Card */
+.tarhal-trip-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tarhal-trip-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  border-color: var(--primary-light);
+}
+
+.tarhal-trip-card-image {
+  aspect-ratio: 16/10;
+  background: linear-gradient(135deg, var(--bg-gray) 0%, var(--bg-light) 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tarhal-trip-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.tarhal-trip-card:hover .tarhal-trip-card-image img {
+  transform: scale(1.05);
+}
+
+.tarhal-trip-card-placeholder {
+  color: var(--text-light);
+}
+
+.tarhal-trip-card-badge {
+  position: absolute;
+  top: 12px;
+  inset-inline-start: 12px;
+  background: rgba(255,255,255,0.95);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.tarhal-trip-card-body {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tarhal-trip-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tarhal-trip-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-gray);
+}
+
+.tarhal-trip-card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tarhal-trip-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.tarhal-trip-card-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.tarhal-trip-card-price-label {
+  font-size: 11px;
+  color: var(--text-gray);
+  font-weight: 400;
+  display: block;
+}
+
+.tarhal-trip-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dark);
+  background: var(--bg-light);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* ============== HERO ============== */
+.tarhal-hero {
+  background: linear-gradient(180deg, rgba(15,118,110,0.08) 0%, rgba(255,255,255,0) 100%);
+  padding: 48px 0 56px;
+  text-align: center;
+}
+
+.tarhal-hero h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.tarhal-hero p {
+  font-size: 16px;
+  color: var(--text-gray);
+  margin-bottom: 28px;
+  max-width: 600px;
+  margin-inline: auto;
+  padding: 0 16px;
+}
+
+.tarhal-hero-search {
+  background: var(--bg-white);
+  border-radius: var(--radius-xl);
+  padding: 16px;
+  box-shadow: var(--shadow-md);
+  max-width: 800px;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+}
+
+.tarhal-hero-search-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+/* ============== FORMS ============== */
+.tarhal-input,
+.tarhal-select,
+.tarhal-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-white);
+  font-size: 15px;
+  transition: var(--transition);
+  min-height: 48px;
+  color: var(--text-dark);
+}
+
+.tarhal-input:focus,
+.tarhal-select:focus,
+.tarhal-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15,118,110,0.1);
+}
+
+.tarhal-input::placeholder,
+.tarhal-textarea::placeholder {
+  color: var(--text-light);
+}
+
+.tarhal-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.tarhal-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+}
+
+.tarhal-form-group {
+  margin-bottom: 16px;
+}
+
+.tarhal-form-hint {
+  font-size: 12px;
+  color: var(--text-gray);
+  margin-top: 4px;
+}
+
+.tarhal-form-error {
+  font-size: 12px;
+  color: var(--error);
+  margin-top: 4px;
+}
+
+/* ============== BADGES ============== */
+.tarhal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--bg-gray);
+  color: var(--text-dark);
+}
+
+.tarhal-badge-primary {
+  background: rgba(15,118,110,0.1);
+  color: var(--primary);
+}
+
+.tarhal-badge-success {
+  background: rgba(22,163,74,0.1);
+  color: var(--success);
+}
+
+.tarhal-badge-warning {
+  background: rgba(234,88,12,0.1);
+  color: var(--warning);
+}
+
+.tarhal-badge-error {
+  background: rgba(220,38,38,0.1);
+  color: var(--error);
+}
+
+.tarhal-badge-accent {
+  background: rgba(212,165,116,0.15);
+  color: var(--accent-dark);
+}
+
+/* ============== SECTIONS ============== */
+.tarhal-section {
+  padding: 40px 0;
+}
+
+.tarhal-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+
+.tarhal-section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.tarhal-section-link {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tarhal-section-link:hover {
+  gap: 8px;
+}
+
+/* ============== GRID ============== */
+.tarhal-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.tarhal-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.tarhal-grid-3 {
+  grid-template-columns: 1fr;
+}
+
+.tarhal-grid-4 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Trip types */
+.tarhal-type-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 12px;
+  text-align: center;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.tarhal-type-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.tarhal-type-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 10px;
+  border-radius: 12px;
+  background: rgba(15,118,110,0.1);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tarhal-type-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* ============== FOOTER ============== */
+.tarhal-footer {
+  background: var(--text-dark);
+  color: white;
+  margin-top: auto;
+  padding: 40px 0 20px;
+}
+
+.tarhal-footer-inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  display: grid;
+  gap: 32px;
+}
+
+.tarhal-footer-brand {
+  text-align: center;
+}
+
+.tarhal-footer-brand svg {
+  margin: 0 auto 12px;
+  display: block;
+}
+
+.tarhal-footer-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.tarhal-footer-tagline {
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+}
+
+.tarhal-footer-cols {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.tarhal-footer-col h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: white;
+}
+
+.tarhal-footer-col a {
+  display: block;
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.tarhal-footer-col a:hover {
+  color: var(--accent);
+}
+
+.tarhal-footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin-top: 32px;
+  padding-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+}
+
+/* ============== AUTH PAGES ============== */
+.tarhal-auth-page {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  background: linear-gradient(180deg, rgba(15,118,110,0.05) 0%, var(--bg-white) 100%);
+}
+
+.tarhal-auth-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--shadow-md);
+}
+
+.tarhal-auth-logo {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.tarhal-auth-logo svg {
+  margin: 0 auto 8px;
+}
+
+.tarhal-auth-title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.tarhal-auth-subtitle {
+  text-align: center;
+  color: var(--text-gray);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.tarhal-auth-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--text-gray);
+}
+
+.tarhal-auth-footer a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.tarhal-role-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.tarhal-role-option {
+  padding: 14px 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-white);
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.tarhal-role-option:hover {
+  border-color: var(--primary-light);
+}
+
+.tarhal-role-option.active {
+  border-color: var(--primary);
+  background: rgba(15,118,110,0.05);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* ============== STATES ============== */
+.tarhal-loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-gray);
+}
+
+.tarhal-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  animation: spin 0.8s linear infinite;
+}
+
+.tarhal-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-gray);
+}
+
+.tarhal-empty-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: var(--bg-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+}
+
+.tarhal-empty-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.tarhal-empty-text {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* ============== ANIMATIONS ============== */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.tarhal-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ============== RESPONSIVE ============== */
+
+/* Tablet */
+@media (min-width: 640px) {
+  :root {
+    --container-padding: 24px;
+  }
+
+  .tarhal-hero {
+    padding: 64px 0 72px;
+  }
+
+  .tarhal-hero h1 {
+    font-size: 36px;
+  }
+
+  .tarhal-hero p {
+    font-size: 17px;
+  }
+
+  .tarhal-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tarhal-grid-4 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .tarhal-auth-card {
+    padding: 40px 32px;
+  }
+
+  .tarhal-footer-inner {
+    grid-template-columns: 1fr 2fr;
+  }
+
+  .tarhal-footer-brand {
+    text-align: start;
+  }
+
+  .tarhal-footer-brand svg {
+    margin-inline: 0;
+  }
+
+  .tarhal-section-title {
+    font-size: 26px;
+  }
+
+  .tarhal-hero-search-inner {
+    grid-template-columns: 2fr 1fr auto;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .tarhal-nav-desktop {
+    display: flex;
+  }
+
+  .tarhal-mobile-menu-btn {
+    display: none;
+  }
+
+  .tarhal-hero h1 {
+    font-size: 44px;
+  }
+
+  .tarhal-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .tarhal-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .tarhal-section {
+    padding: 60px 0;
+  }
+}
+
+/* ============== RTL/LTR ADJUSTMENTS ============== */
+[dir="rtl"] .tarhal-trip-card-badge {
+  inset-inline-start: auto;
+  inset-inline-end: 12px;
+}
+
+/* ============== UTILITIES ============== */
+.tarhal-text-center { text-align: center; }
+.tarhal-text-start { text-align: start; }
+.tarhal-text-end { text-align: end; }
+.tarhal-mb-0 { margin-bottom: 0; }
+.tarhal-mb-1 { margin-bottom: 8px; }
+.tarhal-mb-2 { margin-bottom: 16px; }
+.tarhal-mb-3 { margin-bottom: 24px; }
+.tarhal-mb-4 { margin-bottom: 32px; }
+.tarhal-mt-1 { margin-top: 8px; }
+.tarhal-mt-2 { margin-top: 16px; }
+.tarhal-mt-3 { margin-top: 24px; }
+.tarhal-mt-4 { margin-top: 32px; }
+.tarhal-hidden { display: none !important; }
+.tarhal-flex { display: flex; }
+.tarhal-flex-col { flex-direction: column; }
+.tarhal-items-center { align-items: center; }
+.tarhal-justify-between { justify-content: space-between; }
+.tarhal-gap-1 { gap: 8px; }
+.tarhal-gap-2 { gap: 16px; }
