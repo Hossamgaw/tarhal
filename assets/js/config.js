@@ -39,13 +39,70 @@ function isRTL() {
   return getLocale() === 'ar';
 }
 
-// ============== CURRENCIES ==============
+// ============== CURRENCIES (Global) ==============
 const CURRENCIES = {
+  // Middle East
   EGP: { symbol: '£', nameAr: 'جنيه مصري', nameEn: 'Egyptian Pound' },
   SAR: { symbol: '﷼', nameAr: 'ريال سعودي', nameEn: 'Saudi Riyal' },
-  USD: { symbol: '$', nameAr: 'دولار أمريكي', nameEn: 'US Dollar' },
+  AED: { symbol: 'د.إ', nameAr: 'درهم إماراتي', nameEn: 'UAE Dirham' },
+  KWD: { symbol: 'د.ك', nameAr: 'دينار كويتي', nameEn: 'Kuwaiti Dinar' },
+  QAR: { symbol: 'ر.ق', nameAr: 'ريال قطري', nameEn: 'Qatari Riyal' },
+  BHD: { symbol: '.د.ب', nameAr: 'دينار بحريني', nameEn: 'Bahraini Dinar' },
+  OMR: { symbol: 'ر.ع', nameAr: 'ريال عُماني', nameEn: 'Omani Rial' },
+  JOD: { symbol: 'د.أ', nameAr: 'دينار أردني', nameEn: 'Jordanian Dinar' },
+  LBP: { symbol: 'ل.ل', nameAr: 'ليرة لبنانية', nameEn: 'Lebanese Pound' },
+  IQD: { symbol: 'ع.د', nameAr: 'دينار عراقي', nameEn: 'Iraqi Dinar' },
+  SYP: { symbol: 'ل.س', nameAr: 'ليرة سورية', nameEn: 'Syrian Pound' },
+  YER: { symbol: '﷼', nameAr: 'ريال يمني', nameEn: 'Yemeni Rial' },
+  ILS: { symbol: '₪', nameAr: 'شيكل', nameEn: 'Israeli Shekel' },
+
+  // North Africa
+  LYD: { symbol: 'ل.د', nameAr: 'دينار ليبي', nameEn: 'Libyan Dinar' },
+  TND: { symbol: 'د.ت', nameAr: 'دينار تونسي', nameEn: 'Tunisian Dinar' },
+  DZD: { symbol: 'د.ج', nameAr: 'دينار جزائري', nameEn: 'Algerian Dinar' },
+  MAD: { symbol: 'د.م', nameAr: 'درهم مغربي', nameEn: 'Moroccan Dirham' },
+  SDG: { symbol: 'ج.س', nameAr: 'جنيه سوداني', nameEn: 'Sudanese Pound' },
+
+  // Turkey & Asia
+  TRY: { symbol: '₺', nameAr: 'ليرة تركية', nameEn: 'Turkish Lira' },
+  MYR: { symbol: 'RM', nameAr: 'رينغيت ماليزي', nameEn: 'Malaysian Ringgit' },
+  IDR: { symbol: 'Rp', nameAr: 'روبية إندونيسية', nameEn: 'Indonesian Rupiah' },
+  MVR: { symbol: 'Rf', nameAr: 'روفيا مالديفية', nameEn: 'Maldivian Rufiyaa' },
+  THB: { symbol: '฿', nameAr: 'بات تايلاندي', nameEn: 'Thai Baht' },
+  SGD: { symbol: 'S$', nameAr: 'دولار سنغافوري', nameEn: 'Singapore Dollar' },
+  JPY: { symbol: '¥', nameAr: 'ين ياباني', nameEn: 'Japanese Yen' },
+  CNY: { symbol: '¥', nameAr: 'يوان صيني', nameEn: 'Chinese Yuan' },
+  KRW: { symbol: '₩', nameAr: 'وون كوري', nameEn: 'Korean Won' },
+  INR: { symbol: '₹', nameAr: 'روبية هندية', nameEn: 'Indian Rupee' },
+  PKR: { symbol: '₨', nameAr: 'روبية باكستانية', nameEn: 'Pakistani Rupee' },
+
+  // Europe
   EUR: { symbol: '€', nameAr: 'يورو', nameEn: 'Euro' },
   GBP: { symbol: '£', nameAr: 'جنيه إسترليني', nameEn: 'British Pound' },
+  CHF: { symbol: 'Fr', nameAr: 'فرنك سويسري', nameEn: 'Swiss Franc' },
+  SEK: { symbol: 'kr', nameAr: 'كرونة سويدية', nameEn: 'Swedish Krona' },
+  NOK: { symbol: 'kr', nameAr: 'كرونة نرويجية', nameEn: 'Norwegian Krone' },
+  RUB: { symbol: '₽', nameAr: 'روبل روسي', nameEn: 'Russian Ruble' },
+  AZN: { symbol: '₼', nameAr: 'مانات أذربيجاني', nameEn: 'Azerbaijani Manat' },
+  GEL: { symbol: '₾', nameAr: 'لاري جورجي', nameEn: 'Georgian Lari' },
+
+  // Americas
+  USD: { symbol: '$', nameAr: 'دولار أمريكي', nameEn: 'US Dollar' },
+  CAD: { symbol: 'C$', nameAr: 'دولار كندي', nameEn: 'Canadian Dollar' },
+  BRL: { symbol: 'R$', nameAr: 'ريال برازيلي', nameEn: 'Brazilian Real' },
+  MXN: { symbol: '$', nameAr: 'بيزو مكسيكي', nameEn: 'Mexican Peso' },
+  ARS: { symbol: '$', nameAr: 'بيزو أرجنتيني', nameEn: 'Argentine Peso' },
+
+  // Africa
+  ZAR: { symbol: 'R', nameAr: 'راند جنوب أفريقي', nameEn: 'South African Rand' },
+  KES: { symbol: 'KSh', nameAr: 'شلن كيني', nameEn: 'Kenyan Shilling' },
+  ETB: { symbol: 'Br', nameAr: 'بير إثيوبي', nameEn: 'Ethiopian Birr' },
+  NGN: { symbol: '₦', nameAr: 'نايرا نيجيري', nameEn: 'Nigerian Naira' },
+  TZS: { symbol: 'TSh', nameAr: 'شلن تنزاني', nameEn: 'Tanzanian Shilling' },
+
+  // Oceania
+  AUD: { symbol: 'A$', nameAr: 'دولار أسترالي', nameEn: 'Australian Dollar' },
+  NZD: { symbol: 'NZ$', nameAr: 'دولار نيوزيلندي', nameEn: 'New Zealand Dollar' },
 };
 
 function getCurrency() {
@@ -55,6 +112,10 @@ function getCurrency() {
 function setCurrency(code) {
   if (!CURRENCIES[code]) return;
   localStorage.setItem('currency', code);
+}
+
+function getCurrencyInfo(code) {
+  return CURRENCIES[code] || CURRENCIES.USD;
 }
 
 // ============== SUPABASE ==============
