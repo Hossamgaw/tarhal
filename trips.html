@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="assets/css/style.css">
 
   <style>
-    /* ===== TOP SEARCH BAR ===== */
+    /* ===== TOP SEARCH ===== */
     .top-search-bar {
       background: white;
       border: 1px solid var(--border);
@@ -17,11 +17,7 @@
       padding: 12px;
       margin: 16px 0;
     }
-    .top-search-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
+    .top-search-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
     @media (min-width: 640px) {
       .top-search-grid { grid-template-columns: 1fr 1fr 1fr auto; }
     }
@@ -67,21 +63,11 @@
       border-bottom: 1px solid var(--border);
     }
     .ts-dd-item:last-child { border-bottom: none; }
-    .ts-dd-item:hover,
-    .ts-dd-item.active { background: rgba(15,118,110,0.06); }
+    .ts-dd-item:hover, .ts-dd-item.active { background: rgba(15,118,110,0.06); }
     .ts-dd-flag { font-size: 18px; line-height: 1; }
     .ts-dd-name { flex: 1; }
-    .ts-dd-sub {
-      font-size: 11px;
-      color: var(--text-gray);
-      display: block;
-    }
-    .ts-dd-empty {
-      padding: 14px;
-      text-align: center;
-      color: var(--text-gray);
-      font-size: 13px;
-    }
+    .ts-dd-sub { font-size: 11px; color: var(--text-gray); display: block; }
+    .ts-dd-empty { padding: 14px; text-align: center; color: var(--text-gray); font-size: 13px; }
 
     /* ===== MOBILE FILTER TOGGLE ===== */
     .mobile-filter-toggle {
@@ -101,13 +87,8 @@
       cursor: pointer;
       font-family: inherit;
     }
-    .mobile-filter-toggle:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-    @media (min-width: 900px) {
-      .mobile-filter-toggle { display: none; }
-    }
+    .mobile-filter-toggle:hover { border-color: var(--primary); color: var(--primary); }
+    @media (min-width: 900px) { .mobile-filter-toggle { display: none; } }
 
     /* ===== LAYOUT ===== */
     .trips-layout {
@@ -130,8 +111,7 @@
     }
     .filters-panel.mobile-closed { display: none; }
     @media (min-width: 900px) {
-      .filters-panel,
-      .filters-panel.mobile-closed { display: block; }
+      .filters-panel, .filters-panel.mobile-closed { display: block; }
     }
 
     .filter-group {
@@ -150,11 +130,7 @@
       color: var(--text-dark);
       margin-bottom: 12px;
     }
-    .filter-options {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .filter-options { display: flex; flex-direction: column; gap: 4px; }
     .filter-check {
       display: flex;
       align-items: center;
@@ -165,84 +141,138 @@
       color: var(--text-medium);
     }
     .filter-check input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
+      width: 18px; height: 18px;
       accent-color: var(--primary);
       cursor: pointer;
       flex-shrink: 0;
     }
 
-    /* ===== SHARED SLIDER STYLES ===== */
-    .slider-current {
+    /* =====================================================
+       CUSTOM DUAL SLIDER — ONE TRACK, TWO THUMBS
+       ===================================================== */
+    .dual-slider {
+      margin: 8px 0 4px;
+      padding: 0 12px; /* space for thumbs at edges */
+    }
+    .dual-slider-current {
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-size: 13px;
       font-weight: 700;
       color: var(--primary);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       padding: 8px 12px;
       background: rgba(15,118,110,0.06);
       border-radius: var(--radius);
       gap: 6px;
     }
-    .slider-current-val {
-      white-space: nowrap;
-    }
-    .slider-current-sep {
+    .dual-slider-current-sep {
       color: var(--text-gray);
       font-weight: 400;
       font-size: 12px;
     }
-    .slider-stack {
+
+    .dual-slider-track-wrap {
       position: relative;
-    }
-    .range-input {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: var(--border);
-      outline: none;
-      margin: 4px 0;
-      cursor: pointer;
-    }
-    .range-input::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: white;
-      border: 3px solid var(--primary);
-      cursor: grab;
-      box-shadow: 0 2px 6px rgba(15,118,110,0.3);
-    }
-    .range-input::-moz-range-thumb {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: white;
-      border: 3px solid var(--primary);
-      cursor: grab;
-      box-shadow: 0 2px 6px rgba(15,118,110,0.3);
-    }
-    .range-input::-webkit-slider-thumb:active {
-      cursor: grabbing;
-      transform: scale(1.1);
-    }
-    .range-input.dual {
-      pointer-events: none;
-    }
-    .range-input.dual::-webkit-slider-thumb {
-      pointer-events: auto;
-    }
-    .range-input.dual::-moz-range-thumb {
-      pointer-events: auto;
+      height: 26px;
+      direction: ltr; /* force LTR so slider direction is consistent */
     }
 
-    /* ===== RATING SLIDER ===== */
+    /* Background track */
+    .dual-slider-track {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    /* Colored fill between thumbs */
+    .dual-slider-fill {
+      position: absolute;
+      top: 50%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      border-radius: 3px;
+      transform: translateY(-50%);
+      pointer-events: none;
+      transition: none;
+    }
+
+    /* Hidden range inputs (for accessibility + touch) */
+    .dual-slider-input {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 26px;
+      margin: 0;
+      background: transparent;
+      -webkit-appearance: none;
+      appearance: none;
+      pointer-events: none;
+      transform: translateY(-50%);
+      outline: none;
+      z-index: 2;
+    }
+    .dual-slider-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--primary);
+      cursor: grab;
+      pointer-events: auto;
+      box-shadow: 0 2px 8px rgba(15,118,110,0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .dual-slider-input::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 3px 12px rgba(15,118,110,0.5);
+    }
+    .dual-slider-input::-webkit-slider-thumb:active {
+      cursor: grabbing;
+      transform: scale(1.15);
+      box-shadow: 0 4px 16px rgba(15,118,110,0.6);
+    }
+    .dual-slider-input::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--primary);
+      cursor: grab;
+      pointer-events: auto;
+      box-shadow: 0 2px 8px rgba(15,118,110,0.35);
+    }
+    /* Hide the native track */
+    .dual-slider-input::-webkit-slider-runnable-track {
+      background: transparent;
+      height: 26px;
+    }
+    .dual-slider-input::-moz-range-track {
+      background: transparent;
+      height: 26px;
+    }
+
+    /* Marks under the slider */
+    .dual-slider-marks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-gray);
+      margin-top: 8px;
+      padding: 0 2px;
+    }
+
+    /* ===== RATING SLIDER (single) ===== */
     .rating-stars-display {
       display: flex;
       justify-content: center;
@@ -277,6 +307,7 @@
       outline: none;
       margin: 4px 0;
       cursor: pointer;
+      direction: ltr;
     }
     .rating-range-input::-webkit-slider-thumb {
       -webkit-appearance: none;
@@ -299,14 +330,6 @@
       box-shadow: 0 2px 6px rgba(245,158,11,0.3);
     }
 
-    .slider-marks {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--text-gray);
-      margin-top: 4px;
-    }
-
     /* ===== RESULTS HEADER ===== */
     .results-header {
       display: flex;
@@ -316,14 +339,8 @@
       gap: 12px;
       margin-bottom: 16px;
     }
-    .results-count {
-      font-size: 15px;
-      color: var(--text-medium);
-    }
-    .results-count strong {
-      color: var(--primary);
-      font-weight: 700;
-    }
+    .results-count { font-size: 15px; color: var(--text-medium); }
+    .results-count strong { color: var(--primary); font-weight: 700; }
     .sort-select {
       padding: 8px 12px;
       border: 1px solid var(--border);
@@ -334,10 +351,7 @@
       font-family: inherit;
       min-width: 180px;
     }
-    .sort-select:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
+    .sort-select:focus { outline: none; border-color: var(--primary); }
   </style>
 </head>
 <body>
@@ -346,7 +360,6 @@
 
   <main class="tarhal-container">
 
-    <!-- ===== TOP SEARCH ===== -->
     <div class="top-search-bar">
       <form class="top-search-grid" id="top-search-form" autocomplete="off">
         <div class="ts-field-wrap" id="ts-from-wrap">
@@ -364,7 +377,6 @@
 
     <h1 style="font-size: 22px; font-weight: 700; margin-bottom: 16px;" id="page-title">الرحلات</h1>
 
-    <!-- ===== MOBILE FILTER TOGGLE ===== -->
     <button type="button" class="mobile-filter-toggle" id="filter-toggle">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
@@ -374,7 +386,6 @@
 
     <div class="trips-layout">
 
-      <!-- ===== FILTERS ===== -->
       <aside class="filters-panel mobile-closed" id="filters-panel">
 
         <div class="filter-group">
@@ -382,39 +393,51 @@
           <div class="filter-options" id="type-filters"></div>
         </div>
 
-        <!-- PRICE SLIDER -->
+        <!-- ===== PRICE DUAL SLIDER ===== -->
         <div class="filter-group">
           <div class="filter-title">السعر</div>
-          <div class="slider-current">
-            <span class="slider-current-val" id="price-min-display">—</span>
-            <span class="slider-current-sep">←</span>
-            <span class="slider-current-val" id="price-max-display">—</span>
-          </div>
-          <div class="slider-stack">
-            <input type="range" class="range-input dual" id="price-min-range" min="0" max="100" value="0">
-            <input type="range" class="range-input dual" id="price-max-range" min="0" max="100" value="100">
+          <div class="dual-slider">
+            <div class="dual-slider-current">
+              <span id="price-min-display">—</span>
+              <span class="dual-slider-current-sep">←</span>
+              <span id="price-max-display">—</span>
+            </div>
+            <div class="dual-slider-track-wrap" id="price-track-wrap">
+              <div class="dual-slider-track"></div>
+              <div class="dual-slider-fill" id="price-fill"></div>
+              <input type="range" class="dual-slider-input" id="price-min-range" min="0" max="1000" value="0">
+              <input type="range" class="dual-slider-input" id="price-max-range" min="0" max="1000" value="1000">
+            </div>
+            <div class="dual-slider-marks">
+              <span id="price-low-mark">—</span>
+              <span id="price-high-mark">—</span>
+            </div>
           </div>
         </div>
 
-        <!-- DURATION SLIDER -->
+        <!-- ===== DURATION DUAL SLIDER ===== -->
         <div class="filter-group">
           <div class="filter-title">المدة</div>
-          <div class="slider-current">
-            <span class="slider-current-val" id="days-min-display">—</span>
-            <span class="slider-current-sep">←</span>
-            <span class="slider-current-val" id="days-max-display">—</span>
-          </div>
-          <div class="slider-stack">
-            <input type="range" class="range-input dual" id="days-min-range" min="1" max="30" value="1">
-            <input type="range" class="range-input dual" id="days-max-range" min="1" max="30" value="30">
-          </div>
-          <div class="slider-marks">
-            <span id="days-lowest-mark">1</span>
-            <span id="days-highest-mark">30</span>
+          <div class="dual-slider">
+            <div class="dual-slider-current">
+              <span id="days-min-display">—</span>
+              <span class="dual-slider-current-sep">←</span>
+              <span id="days-max-display">—</span>
+            </div>
+            <div class="dual-slider-track-wrap" id="days-track-wrap">
+              <div class="dual-slider-track"></div>
+              <div class="dual-slider-fill" id="days-fill"></div>
+              <input type="range" class="dual-slider-input" id="days-min-range" min="1" max="30" value="1">
+              <input type="range" class="dual-slider-input" id="days-max-range" min="1" max="30" value="30">
+            </div>
+            <div class="dual-slider-marks">
+              <span id="days-low-mark">1</span>
+              <span id="days-high-mark">30</span>
+            </div>
           </div>
         </div>
 
-        <!-- RATING SLIDER -->
+        <!-- ===== RATING SLIDER ===== -->
         <div class="filter-group">
           <div class="filter-title">التقييم</div>
           <div class="rating-stars-display" id="rating-stars-display">
@@ -432,7 +455,6 @@
 
       </aside>
 
-      <!-- ===== RESULTS ===== -->
       <section>
         <div class="results-header">
           <div class="results-count">
@@ -489,8 +511,48 @@
       initApp();
       loadInitialData();
       renderTypeFilters();
-      setupPriceSlider();
-      setupDaysSlider();
+      setupDualSlider({
+        minInputId: 'price-min-range',
+        maxInputId: 'price-max-range',
+        fillId: 'price-fill',
+        wrapId: 'price-track-wrap',
+        minDisplayId: 'price-min-display',
+        maxDisplayId: 'price-max-display',
+        lowMarkId: 'price-low-mark',
+        highMarkId: 'price-high-mark',
+        absoluteMin: priceBounds.min,
+        absoluteMax: priceBounds.max,
+        formatMin: (v) => formatPrice(v),
+        formatMax: (v) => formatPrice(v),
+        onChange: (lo, hi) => {
+          filters.minPrice = (lo > priceBounds.min) ? lo : null;
+          filters.maxPrice = (hi < priceBounds.max) ? hi : null;
+          applyFiltersAndRender();
+        },
+        isReset: () => ({ min: priceBounds.min, max: priceBounds.max })
+      });
+
+      setupDualSlider({
+        minInputId: 'days-min-range',
+        maxInputId: 'days-max-range',
+        fillId: 'days-fill',
+        wrapId: 'days-track-wrap',
+        minDisplayId: 'days-min-display',
+        maxDisplayId: 'days-max-display',
+        lowMarkId: 'days-low-mark',
+        highMarkId: 'days-high-mark',
+        absoluteMin: daysBounds.min,
+        absoluteMax: daysBounds.max,
+        formatMin: (v) => v + ' يوم',
+        formatMax: (v) => v + ' يوم',
+        onChange: (lo, hi) => {
+          filters.minDays = (lo > daysBounds.min) ? lo : null;
+          filters.maxDays = (hi < daysBounds.max) ? hi : null;
+          applyFiltersAndRender();
+        },
+        isReset: () => ({ min: daysBounds.min, max: daysBounds.max })
+      });
+
       setupRatingSlider();
       setupFilterEvents();
       setupSearchBar();
@@ -552,105 +614,78 @@
     }
 
     // ============================================
-    // PRICE SLIDER
+    // DUAL SLIDER ENGINE
     // ============================================
-    function setupPriceSlider() {
-      const minRange = document.getElementById('price-min-range');
-      const maxRange = document.getElementById('price-max-range');
-      const minDisplay = document.getElementById('price-min-display');
-      const maxDisplay = document.getElementById('price-max-display');
+    function setupDualSlider(cfg) {
+      const minInput = document.getElementById(cfg.minInputId);
+      const maxInput = document.getElementById(cfg.maxInputId);
+      const fill = document.getElementById(cfg.fillId);
+      const minDisplay = document.getElementById(cfg.minDisplayId);
+      const maxDisplay = document.getElementById(cfg.maxDisplayId);
+      const lowMark = document.getElementById(cfg.lowMarkId);
+      const highMark = document.getElementById(cfg.highMarkId);
 
-      function update() {
-        let lo = Number(minRange.value);
-        let hi = Number(maxRange.value);
+      const absMin = cfg.absoluteMin;
+      const absMax = cfg.absoluteMax;
+      const range = absMax - absMin || 1;
+      const STEPS = 1000;
 
-        if (lo > hi - 5) {
-          if (document.activeElement === minRange) { lo = hi - 5; minRange.value = lo; }
-          else { hi = lo + 5; maxRange.value = hi; }
-        }
+      // Set ranges on inputs
+      minInput.min = 0; minInput.max = STEPS; minInput.value = 0;
+      maxInput.min = 0; maxInput.max = STEPS; maxInput.value = STEPS;
 
-        const priceLo = Math.round(priceBounds.min + (priceBounds.max - priceBounds.min) * (lo / 100));
-        const priceHi = Math.round(priceBounds.min + (priceBounds.max - priceBounds.min) * (hi / 100));
+      // Marks
+      lowMark.textContent = cfg.formatMin(absMin);
+      highMark.textContent = cfg.formatMax(absMax);
 
-        minDisplay.textContent = formatPrice(priceLo);
-        maxDisplay.textContent = formatPrice(priceHi);
-
-        filters.minPrice = (lo > 0) ? priceLo : null;
-        filters.maxPrice = (hi < 100) ? priceHi : null;
-
-        applyFiltersAndRender();
+      function stepToValue(step) {
+        return Math.round(absMin + (range * (step / STEPS)));
       }
 
-      minRange.addEventListener('input', update);
-      maxRange.addEventListener('input', update);
-
-      window._resetPriceSlider = () => {
-        minRange.value = 0;
-        maxRange.value = 100;
-        minDisplay.textContent = formatPrice(priceBounds.min);
-        maxDisplay.textContent = formatPrice(priceBounds.max);
-        filters.minPrice = null;
-        filters.maxPrice = null;
-      };
-
-      minDisplay.textContent = formatPrice(priceBounds.min);
-      maxDisplay.textContent = formatPrice(priceBounds.max);
-    }
-
-    // ============================================
-    // DAYS SLIDER
-    // ============================================
-    function setupDaysSlider() {
-      const minRange = document.getElementById('days-min-range');
-      const maxRange = document.getElementById('days-max-range');
-      const minDisplay = document.getElementById('days-min-display');
-      const maxDisplay = document.getElementById('days-max-display');
-      const lowestMark = document.getElementById('days-lowest-mark');
-      const highestMark = document.getElementById('days-highest-mark');
-
-      minRange.min = daysBounds.min;
-      minRange.max = daysBounds.max;
-      minRange.value = daysBounds.min;
-
-      maxRange.min = daysBounds.min;
-      maxRange.max = daysBounds.max;
-      maxRange.value = daysBounds.max;
-
-      lowestMark.textContent = daysBounds.min;
-      highestMark.textContent = daysBounds.max;
-
       function update() {
-        let lo = Number(minRange.value);
-        let hi = Number(maxRange.value);
+        let minStep = Number(minInput.value);
+        let maxStep = Number(maxInput.value);
 
-        if (lo > hi - 1) {
-          if (document.activeElement === minRange) { lo = hi - 1; minRange.value = lo; }
-          else { hi = lo + 1; maxRange.value = hi; }
+        // Prevent crossing
+        if (minStep > maxStep - 5) {
+          if (document.activeElement === minInput) {
+            minStep = maxStep - 5;
+            minInput.value = minStep;
+          } else {
+            maxStep = minStep + 5;
+            maxInput.value = maxStep;
+          }
         }
 
-        minDisplay.textContent = lo + ' يوم';
-        maxDisplay.textContent = hi + ' يوم';
+        // Fill position (in %)
+        const minPct = (minStep / STEPS) * 100;
+        const maxPct = (maxStep / STEPS) * 100;
+        fill.style.left = minPct + '%';
+        fill.style.width = (maxPct - minPct) + '%';
 
-        filters.minDays = (lo > daysBounds.min) ? lo : null;
-        filters.maxDays = (hi < daysBounds.max) ? hi : null;
+        // Values
+        const valLo = stepToValue(minStep);
+        const valHi = stepToValue(maxStep);
 
-        applyFiltersAndRender();
+        minDisplay.textContent = cfg.formatMin(valLo);
+        maxDisplay.textContent = cfg.formatMax(valHi);
+
+        cfg.onChange(valLo, valHi);
       }
 
-      minRange.addEventListener('input', update);
-      maxRange.addEventListener('input', update);
+      minInput.addEventListener('input', update);
+      maxInput.addEventListener('input', update);
 
-      window._resetDaysSlider = () => {
-        minRange.value = daysBounds.min;
-        maxRange.value = daysBounds.max;
-        minDisplay.textContent = daysBounds.min + ' يوم';
-        maxDisplay.textContent = daysBounds.max + ' يوم';
-        filters.minDays = null;
-        filters.maxDays = null;
-      };
+      // Register reset function
+      if (!window._sliderResets) window._sliderResets = [];
+      window._sliderResets.push(() => {
+        minInput.value = 0;
+        maxInput.value = STEPS;
+        update();
+      });
 
-      minDisplay.textContent = daysBounds.min + ' يوم';
-      maxDisplay.textContent = daysBounds.max + ' يوم';
+      // Initial
+      update();
     }
 
     // ============================================
@@ -663,26 +698,24 @@
 
       function update() {
         const val = Number(range.value);
-
         stars.forEach(star => {
           const starVal = Number(star.dataset.star);
           star.classList.toggle('active', starVal <= val);
         });
-
         current.textContent = val === 0 ? 'الكل' : `⭐ ${val} فأكثر`;
-
         filters.rating = val > 0 ? val : null;
         applyFiltersAndRender();
       }
 
       range.addEventListener('input', update);
 
-      window._resetRatingSlider = () => {
+      if (!window._sliderResets) window._sliderResets = [];
+      window._sliderResets.push(() => {
         range.value = 0;
         stars.forEach(s => s.classList.remove('active'));
         current.textContent = 'الكل';
         filters.rating = null;
-      };
+      });
     }
 
     // ============================================
@@ -707,9 +740,7 @@
         document.getElementById('q-from').value = '';
         document.getElementById('q-to').value = '';
         document.getElementById('q-date').value = '';
-        if (window._resetPriceSlider) window._resetPriceSlider();
-        if (window._resetDaysSlider) window._resetDaysSlider();
-        if (window._resetRatingSlider) window._resetRatingSlider();
+        if (window._sliderResets) window._sliderResets.forEach(fn => fn());
         applyFiltersAndRender();
       });
 
@@ -732,7 +763,7 @@
     }
 
     // ============================================
-    // TOP AUTOCOMPLETE
+    // AUTOCOMPLETE
     // ============================================
     function setupTopAutocomplete() {
       new TopAutocomplete('q-from', 'ts-from-dd', 'ts-from-wrap');
@@ -757,9 +788,7 @@
           if (!this.wrap.contains(e.target)) this.close();
         });
       }
-      async onFocus() {
-        if (!this.input.value) await this.showResults('');
-      }
+      async onFocus() { if (!this.input.value) await this.showResults(''); }
       onInput() {
         clearTimeout(this._debounce);
         this._debounce = setTimeout(async () => {
@@ -846,17 +875,13 @@
       if (filters.types.length > 0) {
         list = list.filter(trip => filters.types.includes(trip.trip_type));
       }
-
       if (filters.minPrice != null) list = list.filter(t => t.base_price >= filters.minPrice);
       if (filters.maxPrice != null) list = list.filter(t => t.base_price <= filters.maxPrice);
-
       if (filters.minDays != null) list = list.filter(t => t.days >= filters.minDays);
       if (filters.maxDays != null) list = list.filter(t => t.days <= filters.maxDays);
-
       if (filters.rating != null) {
         list = list.filter(t => (t.rating_avg || 0) >= filters.rating);
       }
-
       if (filters.to) {
         const q = filters.to.toLowerCase();
         list = list.filter(t =>
