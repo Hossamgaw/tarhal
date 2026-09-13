@@ -9,12 +9,115 @@
   <link rel="stylesheet" href="assets/css/style.css">
 
   <style>
+    /* ===== TOP SEARCH BAR ===== */
+    .top-search-bar {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      margin: 16px 0;
+    }
+    .top-search-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    @media (min-width: 640px) {
+      .top-search-grid {
+        grid-template-columns: 1fr 1fr 1fr auto;
+      }
+    }
+    .ts-field-wrap {
+      position: relative;
+    }
+    .ts-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      background: white;
+      font-family: inherit;
+      min-height: 42px;
+      box-sizing: border-box;
+    }
+    .ts-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(15,118,110,0.1);
+    }
+    .ts-dd {
+      position: absolute;
+      top: 100%;
+      inset-inline: 0;
+      margin-top: 4px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      max-height: 260px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+    .ts-dd.open { display: block; }
+    .ts-dd-item {
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ts-dd-item:last-child { border-bottom: none; }
+    .ts-dd-item:hover,
+    .ts-dd-item.active { background: rgba(15,118,110,0.06); }
+    .ts-dd-flag { font-size: 18px; line-height: 1; }
+    .ts-dd-name { flex: 1; }
+    .ts-dd-sub {
+      font-size: 11px;
+      color: var(--text-gray);
+      display: block;
+    }
+    .ts-dd-empty {
+      padding: 14px;
+      text-align: center;
+      color: var(--text-gray);
+      font-size: 13px;
+    }
+
+    /* ===== MOBILE FILTER TOGGLE ===== */
+    .mobile-filter-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .mobile-filter-toggle:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    @media (min-width: 900px) {
+      .mobile-filter-toggle { display: none; }
+    }
+
     /* ===== LAYOUT ===== */
     .trips-layout {
       display: grid;
       grid-template-columns: 1fr;
       gap: 20px;
-      padding: 20px 0;
+      padding: 8px 0 40px;
     }
     @media (min-width: 900px) {
       .trips-layout {
@@ -29,9 +132,13 @@
       border-radius: var(--radius-lg);
       padding: 16px;
       height: fit-content;
-      position: sticky;
-      top: 80px;
     }
+    .filters-panel.mobile-closed { display: none; }
+    @media (min-width: 900px) {
+      .filters-panel,
+      .filters-panel.mobile-closed { display: block; }
+    }
+
     .filter-group {
       margin-bottom: 20px;
       padding-bottom: 20px;
@@ -39,27 +146,28 @@
     }
     .filter-group:last-child {
       border-bottom: none;
-      margin-bottom: 0;
+      margin-bottom: 16px;
       padding-bottom: 0;
     }
     .filter-title {
       font-size: 14px;
       font-weight: 700;
       color: var(--text-dark);
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .filter-options {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 4px;
     }
     .filter-check {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       font-size: 14px;
       cursor: pointer;
       padding: 6px 0;
+      color: var(--text-medium);
     }
     .filter-check input[type="checkbox"],
     .filter-check input[type="radio"] {
@@ -67,29 +175,35 @@
       height: 18px;
       accent-color: var(--primary);
       cursor: pointer;
-    }
-    .filter-price-inputs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .filter-price-inputs input {
-      padding: 8px 10px;
-      font-size: 13px;
+      flex-shrink: 0;
     }
 
-    .mobile-filter-toggle {
+    /* ===== PRICE SLIDER ===== */
+    .price-slider-wrap {
+      padding: 4px 0;
+    }
+    .price-display {
       display: flex;
-      width: 100%;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
       margin-bottom: 12px;
     }
-    @media (min-width: 900px) {
-      .mobile-filter-toggle { display: none; }
+    .price-range-input {
+      width: 100%;
+      margin: 6px 0;
+      accent-color: var(--primary);
+      cursor: pointer;
+      height: 6px;
     }
-    .filters-panel.mobile-closed { display: none; }
-    @media (min-width: 900px) {
-      .filters-panel.mobile-closed { display: block; }
+    .price-range-input:focus { outline: none; }
+    .price-marks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-gray);
+      margin-top: 4px;
     }
 
     /* ===== RESULTS HEADER ===== */
@@ -116,34 +230,10 @@
       font-size: 14px;
       background: white;
       cursor: pointer;
+      font-family: inherit;
+      min-width: 180px;
     }
-
-    /* ===== SEARCH BAR TOP ===== */
-    .top-search-bar {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 12px;
-      margin-bottom: 16px;
-    }
-    .top-search-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    @media (min-width: 640px) {
-      .top-search-grid {
-        grid-template-columns: 1fr 1fr 1fr auto;
-      }
-    }
-    .top-search-grid input {
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: 14px;
-      width: 100%;
-    }
-    .top-search-grid input:focus {
+    .sort-select:focus {
       outline: none;
       border-color: var(--primary);
     }
@@ -157,10 +247,20 @@
 
     <!-- ===== TOP SEARCH ===== -->
     <div class="top-search-bar">
-      <form class="top-search-grid" id="top-search-form">
-        <input type="text" id="q-from" placeholder="من (الدولة أو المدينة)">
-        <input type="text" id="q-to" placeholder="إلى (الدولة أو المدينة)">
-        <input type="date" id="q-date">
+      <form class="top-search-grid" id="top-search-form" autocomplete="off">
+
+        <div class="ts-field-wrap" id="ts-from-wrap">
+          <input type="text" id="q-from" class="ts-input" placeholder="من — الدولة أو المدينة" autocomplete="off">
+          <div class="ts-dd" id="ts-from-dd"></div>
+        </div>
+
+        <div class="ts-field-wrap" id="ts-to-wrap">
+          <input type="text" id="q-to" class="ts-input" placeholder="إلى — الدولة أو المدينة" autocomplete="off">
+          <div class="ts-dd" id="ts-to-dd"></div>
+        </div>
+
+        <input type="date" id="q-date" class="ts-input">
+
         <button type="submit" class="tarhal-btn tarhal-btn-primary">ابحث</button>
       </form>
     </div>
@@ -168,7 +268,7 @@
     <h1 style="font-size: 22px; font-weight: 700; margin-bottom: 16px;" id="page-title">الرحلات</h1>
 
     <!-- ===== MOBILE FILTER TOGGLE ===== -->
-    <button class="tarhal-btn tarhal-btn-secondary mobile-filter-toggle" id="filter-toggle">
+    <button type="button" class="mobile-filter-toggle" id="filter-toggle">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
       </svg>
@@ -187,9 +287,17 @@
 
         <div class="filter-group">
           <div class="filter-title">السعر</div>
-          <div class="filter-price-inputs">
-            <input type="number" id="min-price" placeholder="من">
-            <input type="number" id="max-price" placeholder="إلى">
+          <div class="price-slider-wrap">
+            <div class="price-display">
+              <span id="price-min-display">—</span>
+              <span id="price-max-display">—</span>
+            </div>
+            <input type="range" class="price-range-input" id="price-min-range" min="0" max="100" value="0">
+            <input type="range" class="price-range-input" id="price-max-range" min="0" max="100" value="100">
+            <div class="price-marks">
+              <span id="price-lowest-mark">0</span>
+              <span id="price-highest-mark">0</span>
+            </div>
           </div>
         </div>
 
@@ -212,7 +320,7 @@
           </div>
         </div>
 
-        <button class="tarhal-btn tarhal-btn-outline tarhal-btn-block" id="clear-filters">مسح الفلاتر</button>
+        <button type="button" class="tarhal-btn tarhal-btn-outline tarhal-btn-block" id="clear-filters">مسح الفلاتر</button>
 
       </aside>
 
@@ -252,6 +360,7 @@
     // ============================================
     let allTrips = [];
     let filteredTrips = [];
+    let priceBounds = { min: 0, max: 100000 };
     let filters = {
       types: [],
       minPrice: null,
@@ -268,17 +377,19 @@
     // ============================================
     document.addEventListener('DOMContentLoaded', () => {
       initApp();
-      loadInitialFilters();
+      loadInitialData();
       renderTypeFilters();
+      setupPriceSlider();
       setupFilterEvents();
       setupSearchBar();
+      setupTopAutocomplete();
       applyFiltersAndRender();
     });
 
     // ============================================
-    // READ QUERY PARAMS
+    // READ QUERY PARAMS + LOAD
     // ============================================
-    function loadInitialFilters() {
+    function loadInitialData() {
       const params = new URLSearchParams(window.location.search);
       const type = params.get('type');
       const from = params.get('from');
@@ -293,6 +404,19 @@
       if (q) { filters.to = q; document.getElementById('q-to').value = q; }
 
       allTrips = [...MOCK_TRIPS];
+
+      // Compute price bounds from all trips
+      if (allTrips.length > 0) {
+        const prices = allTrips.map(t => t.base_price);
+        priceBounds.min = Math.min(...prices);
+        priceBounds.max = Math.max(...prices);
+      }
+
+      // Set page title if type filter
+      if (type) {
+        const tt = t('tripTypes.' + type);
+        document.getElementById('page-title').textContent = tt;
+      }
     }
 
     // ============================================
@@ -308,9 +432,69 @@
       container.innerHTML = types.map(tp => `
         <label class="filter-check">
           <input type="checkbox" data-type="${tp.key}" ${filters.types.includes(tp.key) ? 'checked' : ''}>
-          ${t('tripTypes.' + tp.key)}
+          <span>${t('tripTypes.' + tp.key)}</span>
         </label>
       `).join('');
+    }
+
+    // ============================================
+    // PRICE SLIDER
+    // ============================================
+    function setupPriceSlider() {
+      const minRange = document.getElementById('price-min-range');
+      const maxRange = document.getElementById('price-max-range');
+      const minDisplay = document.getElementById('price-min-display');
+      const maxDisplay = document.getElementById('price-max-display');
+      const lowestMark = document.getElementById('price-lowest-mark');
+      const highestMark = document.getElementById('price-highest-mark');
+
+      // Use 0-100 scale, map to actual price bounds
+      minRange.value = 0;
+      maxRange.value = 100;
+
+      minDisplay.textContent = formatPrice(priceBounds.min);
+      maxDisplay.textContent = formatPrice(priceBounds.max);
+      lowestMark.textContent = formatPrice(priceBounds.min);
+      highestMark.textContent = formatPrice(priceBounds.max);
+
+      function update() {
+        let lo = Number(minRange.value);
+        let hi = Number(maxRange.value);
+
+        // Prevent crossing
+        if (lo > hi - 5) {
+          if (document.activeElement === minRange) {
+            lo = hi - 5;
+            minRange.value = lo;
+          } else {
+            hi = lo + 5;
+            maxRange.value = hi;
+          }
+        }
+
+        const priceLo = Math.round(priceBounds.min + (priceBounds.max - priceBounds.min) * (lo / 100));
+        const priceHi = Math.round(priceBounds.min + (priceBounds.max - priceBounds.min) * (hi / 100));
+
+        minDisplay.textContent = formatPrice(priceLo);
+        maxDisplay.textContent = formatPrice(priceHi);
+
+        // Apply filter only if not at extremes
+        filters.minPrice = (lo > 0) ? priceLo : null;
+        filters.maxPrice = (hi < 100) ? priceHi : null;
+
+        applyFiltersAndRender();
+      }
+
+      minRange.addEventListener('input', update);
+      maxRange.addEventListener('input', update);
+
+      // Store for reset
+      window._resetPriceSlider = () => {
+        minRange.value = 0;
+        maxRange.value = 100;
+        minDisplay.textContent = formatPrice(priceBounds.min);
+        maxDisplay.textContent = formatPrice(priceBounds.max);
+      };
     }
 
     // ============================================
@@ -323,15 +507,6 @@
             .map(el => el.dataset.type);
           applyFiltersAndRender();
         });
-      });
-
-      document.getElementById('min-price').addEventListener('input', (e) => {
-        filters.minPrice = e.target.value ? Number(e.target.value) : null;
-        debounceApply();
-      });
-      document.getElementById('max-price').addEventListener('input', (e) => {
-        filters.maxPrice = e.target.value ? Number(e.target.value) : null;
-        debounceApply();
       });
 
       document.querySelectorAll('input[name="duration"]').forEach(r => {
@@ -355,21 +530,17 @@
       document.getElementById('clear-filters').addEventListener('click', () => {
         filters = { types: [], minPrice: null, maxPrice: null, duration: '', rating: null, from: '', to: '', date: '' };
         document.querySelectorAll('#type-filters input').forEach(cb => cb.checked = false);
-        document.getElementById('min-price').value = '';
-        document.getElementById('max-price').value = '';
         document.querySelectorAll('input[name="duration"], input[name="rating"]').forEach(r => r.checked = r.value === '');
+        document.getElementById('q-from').value = '';
+        document.getElementById('q-to').value = '';
+        document.getElementById('q-date').value = '';
+        if (window._resetPriceSlider) window._resetPriceSlider();
         applyFiltersAndRender();
       });
 
       document.getElementById('filter-toggle').addEventListener('click', () => {
         document.getElementById('filters-panel').classList.toggle('mobile-closed');
       });
-    }
-
-    let _debounceTimer = null;
-    function debounceApply() {
-      clearTimeout(_debounceTimer);
-      _debounceTimer = setTimeout(applyFiltersAndRender, 300);
     }
 
     // ============================================
@@ -386,32 +557,157 @@
     }
 
     // ============================================
+    // TOP AUTOCOMPLETE
+    // ============================================
+    function setupTopAutocomplete() {
+      new TopAutocomplete('q-from', 'ts-from-dd', 'ts-from-wrap');
+      new TopAutocomplete('q-to', 'ts-to-dd', 'ts-to-wrap');
+    }
+
+    class TopAutocomplete {
+      constructor(inputId, ddId, wrapId) {
+        this.input = document.getElementById(inputId);
+        this.dd = document.getElementById(ddId);
+        this.wrap = document.getElementById(wrapId);
+        this.items = [];
+        this.activeIndex = -1;
+        this._debounce = null;
+        this.init();
+      }
+
+      init() {
+        this.input.addEventListener('focus', () => this.onFocus());
+        this.input.addEventListener('input', () => this.onInput());
+        this.input.addEventListener('keydown', (e) => this.onKey(e));
+        document.addEventListener('click', (e) => {
+          if (!this.wrap.contains(e.target)) this.close();
+        });
+      }
+
+      async onFocus() {
+        if (!this.input.value) await this.showResults('');
+      }
+
+      onInput() {
+        clearTimeout(this._debounce);
+        this._debounce = setTimeout(async () => {
+          const q = this.input.value.trim();
+          if (q.length === 0) { this.close(); return; }
+          await this.showResults(q);
+        }, 120);
+      }
+
+      async showResults(query) {
+        this.dd.innerHTML = '<div class="ts-dd-empty">...</div>';
+        this.dd.classList.add('open');
+
+        try {
+          if (query.length === 0) {
+            const isAr = isRTL();
+            this.items = COUNTRIES_DB.slice(0, 20).map(c => ({
+              type: 'country',
+              code: c.code,
+              flag: c.flag,
+              name: isAr ? c.ar : c.en,
+              sub: isAr ? c.en : c.ar,
+              displayName: `${c.flag} ${isAr ? c.ar : c.en}`,
+            }));
+          } else {
+            this.items = await searchAll(query);
+          }
+        } catch (e) {
+          this.items = [];
+        }
+
+        this.render();
+      }
+
+      render() {
+        if (this.items.length === 0) {
+          this.dd.innerHTML = `<div class="ts-dd-empty">لا توجد نتائج</div>`;
+          return;
+        }
+
+        this.dd.innerHTML = this.items.map((item, i) => `
+          <div class="ts-dd-item" data-index="${i}">
+            <span class="ts-dd-flag">${item.flag || '📍'}</span>
+            <span class="ts-dd-name">
+              ${item.name}
+              <span class="ts-dd-sub">${item.sub || ''}</span>
+            </span>
+          </div>
+        `).join('');
+
+        this.dd.querySelectorAll('.ts-dd-item').forEach(el => {
+          el.addEventListener('click', () => this.select(Number(el.dataset.index)));
+        });
+
+        this.activeIndex = -1;
+      }
+
+      select(index) {
+        const item = this.items[index];
+        if (!item) return;
+        this.input.value = item.displayName;
+        this.close();
+      }
+
+      onKey(e) {
+        if (!this.dd.classList.contains('open')) return;
+        const items = this.dd.querySelectorAll('.ts-dd-item');
+        if (items.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          this.activeIndex = Math.min(this.activeIndex + 1, items.length - 1);
+          this.highlight(items);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          this.activeIndex = Math.max(this.activeIndex - 1, 0);
+          this.highlight(items);
+        } else if (e.key === 'Enter') {
+          if (this.activeIndex >= 0) {
+            e.preventDefault();
+            this.select(this.activeIndex);
+          }
+        } else if (e.key === 'Escape') {
+          this.close();
+        }
+      }
+
+      highlight(items) {
+        items.forEach((el, i) => el.classList.toggle('active', i === this.activeIndex));
+      }
+
+      close() {
+        this.dd.classList.remove('open');
+        this.dd.innerHTML = '';
+        this.activeIndex = -1;
+      }
+    }
+
+    // ============================================
     // APPLY FILTERS + RENDER
     // ============================================
     function applyFiltersAndRender() {
       let list = [...allTrips];
 
-      // Type
       if (filters.types.length > 0) {
         list = list.filter(trip => filters.types.includes(trip.trip_type));
       }
 
-      // Price
       if (filters.minPrice != null) list = list.filter(t => t.base_price >= filters.minPrice);
       if (filters.maxPrice != null) list = list.filter(t => t.base_price <= filters.maxPrice);
 
-      // Duration
       if (filters.duration) {
         const [min, max] = filters.duration.split('-').map(Number);
         list = list.filter(t => t.days >= min && t.days <= max);
       }
 
-      // Rating
       if (filters.rating != null) {
         list = list.filter(t => (t.rating_avg || 0) >= filters.rating);
       }
 
-      // Text search (from/to)
       if (filters.to) {
         const q = filters.to.toLowerCase();
         list = list.filter(t =>
@@ -421,7 +717,6 @@
         );
       }
 
-      // Sort
       const sortBy = document.getElementById('sort-select').value;
       if (sortBy === 'price-low') list.sort((a, b) => a.base_price - b.base_price);
       else if (sortBy === 'price-high') list.sort((a, b) => b.base_price - a.base_price);
