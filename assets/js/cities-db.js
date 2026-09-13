@@ -1,11 +1,10 @@
 // ============================================
 // TARHAL — Cities Database (IndexedDB)
-// Loads 150,000+ cities from all countries
+// Loads from countriesnow.tech (per-country)
 // ============================================
 
-const CITIES_DB_NAME = 'tarhal_cities_db';
+const CITIES_DB_NAME = 'tarhal_cities_db_v2';
 const CITIES_DB_VERSION = 1;
-const CITIES_CDN = 'https://cdn.jsdelivr.net/gh/dr5hn/countries-states-cities-database@master/json/cities.min.json';
 
 let _dbPromise = null;
 
@@ -64,55 +63,114 @@ async function getCitiesStatus() {
 }
 
 /**
- * Load all cities from CDN and store in IndexedDB
+ * Fetch cities for one country from countriesnow.tech
+ */
+async function fetchCitiesForCountry(countryNameEn) {
+  const res = await fetch('https://countriesnow.tech/api/v1/cities', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ country: countryNameEn }),
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  return (data.data || []).map(name => ({ name }));
+}
+
+/**
+ * Save one country's cities to IndexedDB
+ */
+async function saveCitiesToDB(cities, countryCode) {
+  const db = await openCitiesDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('cities', 'readwrite');
+    const store = tx.objectStore('cities');
+    cities.forEach(c => {
+      if (!c.name) return;
+      store.put({
+        name: c.name,
+        nameLower: c.name.toLowerCase(),
+        countryCode: countryCode,
+      });
+    });
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+/**
+ * Mark a country as loaded
+ */
+async function markCountryLoaded(code) {
+  const db = await openCitiesDB();
+  return new Promise((resolve) => {
+    const tx = db.transaction('meta', 'readwrite');
+    tx.objectStore('meta').put({ key: 'country_' + code, loaded: true });
+    tx.oncomplete = resolve;
+  });
+}
+
+async function isCountryLoaded(code) {
+  try {
+    const db = await openCitiesDB();
+    return new Promise((resolve) => {
+      const tx = db.transaction('meta', 'readonly');
+      const req = tx.objectStore('meta').get('country_' + code);
+      req.onsuccess = () => resolve(!!(req.result && req.result.loaded));
+      req.onerror = () => resolve(false);
+    });
+  } catch (e) { return false; }
+}
+
+/**
+ * Load cities for ALL countries (progressive)
  */
 async function loadAllCities(onProgress) {
   if (await isCitiesReady()) return true;
 
-  const res = await fetch(CITIES_CDN);
-  if (!res.ok) throw new Error('فشل تحميل المدن');
-  const cities = await res.json();
+  const countries = await loadCountries();
+  const total = countries.length;
+  let done = 0;
+  let totalCities = 0;
 
-  const db = await openCitiesDB();
-  const total = cities.length;
-  const batchSize = 500;
+  // Process in batches of 5 (parallel)
+  const batchSize = 5;
 
-  // Clear existing (in case of partial load)
-  await new Promise((resolve) => {
-    const tx = db.transaction('cities', 'readwrite');
-    tx.objectStore('cities').clear();
-    tx.oncomplete = resolve;
-  });
+  for (let i = 0; i < countries.length; i += batchSize) {
+    const batch = countries.slice(i, i + batchSize);
 
-  for (let i = 0; i < total; i += batchSize) {
-    const batch = cities.slice(i, i + batchSize);
-    await new Promise((resolve, reject) => {
-      const tx = db.transaction('cities', 'readwrite');
-      const store = tx.objectStore('cities');
-      batch.forEach(c => {
-        const name = c.name || c.city || '';
-        if (!name) return;
-        store.put({
-          name: name,
-          nameLower: name.toLowerCase(),
-          countryCode: c.country_code || c.countryCode || '',
-          stateName: c.state_name || c.stateName || c.state || '',
-        });
-      });
-      tx.oncomplete = resolve;
-      tx.onerror = () => reject(tx.error);
-    });
-    if (onProgress) onProgress(Math.min(i + batchSize, total), total);
-    // Small delay to avoid blocking UI
-    if (i % 5000 === 0) await new Promise(r => setTimeout(r, 0));
+    await Promise.all(batch.map(async (country) => {
+      // Skip if already loaded
+      if (await isCountryLoaded(country.code)) {
+        done++;
+        if (onProgress) onProgress(done, total, totalCities);
+        return;
+      }
+
+      try {
+        const cities = await fetchCitiesForCountry(country.nameEn);
+        if (cities.length > 0) {
+          await saveCitiesToDB(cities, country.code);
+          totalCities += cities.length;
+        }
+        await markCountryLoaded(country.code);
+      } catch (err) {
+        console.warn('Failed cities for', country.code, err);
+      }
+
+      done++;
+      if (onProgress) onProgress(done, total, totalCities);
+    }));
+
+    // Small delay between batches to be nice to the API
+    await new Promise(r => setTimeout(r, 100));
   }
 
-  await setCitiesStatus({ loaded: true, count: total, date: Date.now() });
+  await setCitiesStatus({ loaded: true, count: totalCities, date: Date.now() });
   return true;
 }
 
 /**
- * Fast search in IndexedDB
+ * Search cities in IndexedDB
  */
 async function searchCitiesIndexed(query, limit = 30) {
   if (!query || query.length < 2) return [];
@@ -139,9 +197,6 @@ async function searchCitiesIndexed(query, limit = 30) {
   });
 }
 
-/**
- * Get count of stored cities
- */
 async function getCitiesCount() {
   try {
     const db = await openCitiesDB();
