@@ -1,26 +1,22 @@
 // ============================================
-// TARHAL — Global Data (Countries, Cities, Currencies)
-// Uses free APIs + localStorage cache
+// TARHAL — Global Data
+// Countries from GitHub + Cities from IndexedDB
 // ============================================
 
 const CACHE_KEYS = {
   COUNTRIES: 'tarhal_countries_v2',
-  CITIES: 'tarhal_cities_v2_',
 };
 
 const CACHE_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days
 
-// In-memory cache (fast access)
 let _countriesCache = null;
-const _citiesCache = {};
 
 // ============================================
-// COUNTRIES — from mledoze/countries on GitHub
+// LOAD COUNTRIES
 // ============================================
 async function loadCountries() {
   if (_countriesCache) return _countriesCache;
 
-  // Check localStorage cache
   try {
     const cached = localStorage.getItem(CACHE_KEYS.COUNTRIES);
     if (cached) {
@@ -32,7 +28,6 @@ async function loadCountries() {
     }
   } catch (e) { /* ignore */ }
 
-  // Fetch from GitHub
   try {
     const res = await fetch(
       'https://raw.githubusercontent.com/mledoze/countries/master/countries.json'
@@ -42,7 +37,6 @@ async function loadCountries() {
     const countries = raw
       .filter(c => c.cca2 && c.name && (c.name.common || c.name.official))
       .map(c => {
-        // Extract currency (first one)
         const currencyCodes = c.currencies ? Object.keys(c.currencies) : [];
         const currency = currencyCodes[0] || 'USD';
         const currencyData = c.currencies ? c.currencies[currency] : null;
@@ -62,13 +56,12 @@ async function loadCountries() {
       })
       .sort((a, b) => a.nameEn.localeCompare(b.nameEn));
 
-    // Save to localStorage
     try {
       localStorage.setItem(CACHE_KEYS.COUNTRIES, JSON.stringify({
         data: countries,
         expiry: Date.now() + CACHE_DURATION,
       }));
-    } catch (e) { /* ignore quota errors */ }
+    } catch (e) { /* ignore */ }
 
     _countriesCache = countries;
     return countries;
@@ -79,65 +72,58 @@ async function loadCountries() {
 }
 
 // ============================================
-// CITIES — from countriesnow.tech API
+// SEARCH (Countries + Cities from IndexedDB)
 // ============================================
-async function loadCities(countryCode) {
-  if (!countryCode) return [];
+async function searchAll(query) {
+  const q = query.trim();
+  if (!q || q.length < 2) return [];
 
-  if (_citiesCache[countryCode]) return _citiesCache[countryCode];
+  const results = [];
+  const qLower = q.toLowerCase();
 
-  const cacheKey = CACHE_KEYS.CITIES + countryCode;
+  // 1. Search countries
+  const countries = await loadCountries();
+  countries.forEach(c => {
+    if (c.nameEn.toLowerCase().includes(qLower) || c.nameAr.includes(q)) {
+      results.push({
+        type: 'country',
+        code: c.code,
+        flag: c.flag,
+        name: isRTL() ? c.nameAr : c.nameEn,
+        sub: isRTL() ? c.nameEn : c.nameAr,
+        displayName: `${c.flag} ${isRTL() ? c.nameAr : c.nameEn}`,
+      });
+    }
+  });
 
-  // Check cache
+  // 2. Search cities from IndexedDB
   try {
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      const parsed = JSON.parse(cached);
-      if (parsed.expiry > Date.now()) {
-        _citiesCache[countryCode] = parsed.data;
-        return parsed.data;
+    if (typeof searchCitiesIndexed === 'function') {
+      const cities = await searchCitiesIndexed(q, 30);
+      for (const city of cities) {
+        const country = countries.find(c => c.code === city.countryCode);
+        if (!country) continue;
+        results.push({
+          type: 'city',
+          countryCode: city.countryCode,
+          flag: country.flag,
+          name: city.name,
+          sub: isRTL() ? country.nameAr : country.nameEn,
+          displayName: `${country.flag} ${city.name} — ${isRTL() ? country.nameAr : country.nameEn}`,
+        });
       }
     }
-  } catch (e) { /* ignore */ }
-
-  // Get country English name
-  const countries = await loadCountries();
-  const country = countries.find(c => c.code === countryCode);
-  if (!country) return [];
-
-  // Fetch cities
-  try {
-    const res = await fetch('https://countriesnow.tech/api/v1/cities', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ country: country.nameEn }),
-    });
-    const data = await res.json();
-    const cities = (data.data || []).map(name => ({ name }));
-
-    // Save cache
-    try {
-      localStorage.setItem(cacheKey, JSON.stringify({
-        data: cities,
-        expiry: Date.now() + CACHE_DURATION,
-      }));
-    } catch (e) { /* ignore */ }
-
-    _citiesCache[countryCode] = cities;
-    return cities;
   } catch (e) {
-    console.error('Failed to load cities for', countryCode, e);
-    return [];
+    console.warn('City search failed:', e);
   }
+
+  return results.slice(0, 30);
 }
 
 // ============================================
 // HELPERS
 // ============================================
 
-/**
- * Convert country code (e.g. "EG") to emoji flag (🇪🇬)
- */
 function countryCodeToFlag(code) {
   if (!code || code.length !== 2) return '🌍';
   try {
@@ -151,24 +137,15 @@ function countryCodeToFlag(code) {
   }
 }
 
-/**
- * Get country by code (from cache)
- */
 function getCountryByCode(code) {
   if (!_countriesCache) return null;
   return _countriesCache.find(c => c.code === code) || null;
 }
 
-/**
- * Get all countries (from cache)
- */
 function getAllCountries() {
   return _countriesCache || [];
 }
 
-/**
- * Get country name by locale
- */
 function getCountryName(code, locale) {
   const country = getCountryByCode(code);
   if (!country) return code;
@@ -176,19 +153,12 @@ function getCountryName(code, locale) {
   return loc === 'ar' ? country.nameAr : country.nameEn;
 }
 
-/**
- * Get currency by country code
- */
 function getCurrencyByCountry(code) {
   const country = getCountryByCode(code);
   return country ? country.currency : 'USD';
 }
 
-/**
- * Detect user's country via IP
- */
 async function detectUserCountry() {
-  // Check cache first
   try {
     const cached = localStorage.getItem('tarhal_user_country');
     if (cached) {
@@ -222,16 +192,10 @@ async function detectUserCountry() {
   return fallback;
 }
 
-/**
- * Clear all data cache (useful for debugging)
- */
 function clearDataCache() {
   _countriesCache = null;
-  Object.keys(_citiesCache).forEach(k => delete _citiesCache[k]);
   Object.keys(localStorage).forEach(key => {
-    if (key.startsWith('tarhal_countries_') ||
-        key.startsWith('tarhal_cities_') ||
-        key === 'tarhal_user_country') {
+    if (key.startsWith('tarhal_countries_') || key === 'tarhal_user_country') {
       localStorage.removeItem(key);
     }
   });
