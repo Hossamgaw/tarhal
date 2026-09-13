@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#0F766E">
+  <meta name="description" content="ترحال — منصة الرحلات العالمية. شوف رحلتك… قبل ما تبدأ">
+  <title>ترحال — شوف رحلتك… قبل ما تبدأ</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='25' cy='35' r='10' fill='%23DC2626'/%3E%3Ccircle cx='25' cy='50' r='3' fill='%23DC2626'/%3E%3Cline x1='25' y1='42' x2='75' y2='42' stroke='%2314B8A6' stroke-width='3'/%3E%3Ccircle cx='50' cy='42' r='6' fill='%230F766E'/%3E%3Ccircle cx='75' cy='35' r='10' fill='%23DC2626'/%3E%3Ccircle cx='75' cy='50' r='3' fill='%23DC2626'/%3E%3C/svg%3E">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Header (يُملأ تلقائيًا من app.js) -->
+  <header id="app-header"></header>
+
+  <!-- ============== MAIN ============== -->
+  <main>
+
+    <!-- ============== HERO ============== -->
+    <section class="tarhal-hero">
+      <div class="tarhal-container">
+        <h1 id="hero-title">كل رحلات العالم في مكان واحد</h1>
+        <p id="hero-subtitle">اكتشف، قارن، احجز، وتابع رحلتك كاملة من لحظة الحجز حتى العودة</p>
+
+        <div class="tarhal-hero-search">
+          <form class="tarhal-hero-search-inner" id="search-form">
+            <input
+              type="text"
+              class="tarhal-input"
+              id="search-destination"
+              placeholder="إلى أين؟"
+              aria-label="الوجهة"
+            >
+            <input
+              type="date"
+              class="tarhal-input"
+              id="search-date"
+              aria-label="تاريخ السفر"
+            >
+            <button type="submit" class="tarhal-btn tarhal-btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <span id="search-btn-text">ابحث</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== TRIP TYPES ============== -->
+    <section class="tarhal-section">
+      <div class="tarhal-container">
+        <div class="tarhal-section-header">
+          <h2 class="tarhal-section-title" id="types-title">أنواع الرحلات</h2>
+        </div>
+        <div class="tarhal-grid tarhal-grid-4" id="trip-types-grid">
+          <!-- سيتم ملؤها من JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== HOW IT WORKS ============== -->
+    <section class="tarhal-section" style="background: var(--bg-light);">
+      <div class="tarhal-container">
+        <div class="tarhal-section-header">
+          <h2 class="tarhal-section-title" id="how-title">كيف يعمل ترحال؟</h2>
+        </div>
+        <div class="tarhal-grid tarhal-grid-4" id="how-grid">
+          <!-- سيتم ملؤها من JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== FEATURED TRIPS ============== -->
+    <section class="tarhal-section">
+      <div class="tarhal-container">
+        <div class="tarhal-section-header">
+          <h2 class="tarhal-section-title" id="featured-title">رحلات مميزة</h2>
+          <a href="trips.html" class="tarhal-section-link" id="view-all-link">
+            <span>شاهد الكل</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </a>
+        </div>
+        <div class="tarhal-grid tarhal-grid-3" id="featured-trips-grid">
+          <!-- سيتم ملؤها من JavaScript -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (يُملأ تلقائيًا من app.js) -->
+  <footer id="app-footer"></footer>
+
+  <!-- Scripts -->
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/app.js"></script>
+
+  <script>
+    // ============== INIT ==============
+    document.addEventListener('DOMContentLoaded', () => {
+      // Render shared UI
+      initApp();
+
+      // Translate static texts
+      updateStaticTexts();
+
+      // Render trip types
+      renderTripTypes();
+
+      // Render "how it works"
+      renderHowItWorks();
+
+      // Render featured trips
+      renderFeaturedTrips();
+
+      // Setup search form
+      setupSearchForm();
+
+      // Re-render on locale change
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'locale') {
+          updateStaticTexts();
+          renderTripTypes();
+          renderHowItWorks();
+          renderFeaturedTrips();
+        }
+      });
+    });
+
+    // ============== STATIC TEXTS ==============
+    function updateStaticTexts() {
+      document.getElementById('hero-title').textContent = t('home.hero');
+      document.getElementById('hero-subtitle').textContent = t('home.sub');
+      document.getElementById('search-destination').placeholder = t('home.searchPlaceholder');
+      document.getElementById('search-btn-text').textContent = t('home.search');
+      document.getElementById('types-title').textContent = t('home.types');
+      document.getElementById('how-title').textContent = t('home.howItWorks');
+      document.getElementById('featured-title').textContent = t('home.featured');
+      document.querySelector('#view-all-link span').textContent = t('home.viewAll');
+      document.title = t('app.name') + ' — ' + t('app.tagline');
+    }
+
+    // ============== TRIP TYPES ==============
+    function renderTripTypes() {
+      const grid = document.getElementById('trip-types-grid');
+      if (!grid) return;
+
+      const types = [
+        { key: 'umrah', icon: '🕌' },
+        { key: 'hajj', icon: '🕋' },
+        { key: 'leisure', icon: '🏖️' },
+        { key: 'adventure', icon: '🏔️' },
+        { key: 'family', icon: '👨‍👩‍👧' },
+        { key: 'honeymoon', icon: '💑' },
+        { key: 'cruise', icon: '🚢' },
+        { key: 'cultural', icon: '🏛️' },
+      ];
+
+      grid.innerHTML = types.map(type => `
+        <a href="trips.html?type=${type.key}" class="tarhal-type-card">
+          <div class="tarhal-type-icon" style="font-size: 24px;">${type.icon}</div>
+          <div class="tarhal-type-name">${t('tripTypes.' + type.key)}</div>
+        </a>
+      `).join('');
+    }
+
+    // ============== HOW IT WORKS ==============
+    function renderHowItWorks() {
+      const grid = document.getElementById('how-grid');
+      if (!grid) return;
+
+      const steps = [
+        { num: '1', key: 'step1', descKey: 'step1Desc', icon: '🔍' },
+        { num: '2', key: 'step2', descKey: 'step2Desc', icon: '⚖️' },
+        { num: '3', key: 'step3', descKey: 'step3Desc', icon: '✅' },
+        { num: '4', key: 'step4', descKey: 'step4Desc', icon: '📍' },
+      ];
+
+      grid.innerHTML = steps.map(step => `
+        <div class="tarhal-card" style="text-align: center;">
+          <div style="
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0F766E 0%, #14B8A6 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(15,118,110,0.25);
+          ">${step.num}</div>
+          <div style="font-size: 32px; margin-bottom: 8px;">${step.icon}</div>
+          <div style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text-dark);">
+            ${t('home.' + step.key)}
+          </div>
+          <div style="font-size: 13px; color: var(--text-gray); line-height: 1.6;">
+            ${t('home.' + step.descKey)}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ============== FEATURED TRIPS ==============
+    function renderFeaturedTrips() {
+      const grid = document.getElementById('featured-trips-grid');
+      if (!grid) return;
+
+      // Use MOCK_TRIPS from app.js (first 6)
+      const trips = MOCK_TRIPS.slice(0, 6);
+
+      if (trips.length === 0) {
+        grid.innerHTML = `
+          <div class="tarhal-empty" style="grid-column: 1 / -1;">
+            <div class="tarhal-empty-title">${t('trips.noResults')}</div>
+            <div class="tarhal-empty-text">${t('trips.noResultsDesc')}</div>
+          </div>
+        `;
+        return;
+      }
+
+      const isAr = getLocale() === 'ar';
+
+      grid.innerHTML = trips.map(trip => `
+        <a href="trip.html?slug=${trip.slug}" class="tarhal-trip-card">
+          <div class="tarhal-trip-card-image">
+            ${trip.cover_url
+              ? `<img src="${trip.cover_url}" alt="${isAr ? trip.title_ar : trip.title_en}">`
+              : `<div class="tarhal-trip-card-placeholder">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                  </svg>
+                </div>`
+            }
+            <div class="tarhal-trip-card-badge">${t('tripTypes.' + trip.trip_type)}</div>
+          </div>
+          <div class="tarhal-trip-card-body">
+            <h3 class="tarhal-trip-card-title">${isAr ? trip.title_ar : trip.title_en}</h3>
+            <div class="tarhal-trip-card-meta">
+              <span class="tarhal-trip-card-meta-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                ${trip.days} ${t('trips.days')}
+              </span>
+            </div>
+            <div class="tarhal-trip-card-footer">
+              <div>
+                <div class="tarhal-trip-card-price-label">${t('trip.price')}</div>
+                <div class="tarhal-trip-card-price">${formatPrice(trip.base_price, trip.currency)}</div>
+              </div>
+              ${trip.rating_avg > 0 ? `
+                <div class="tarhal-trip-card-rating">
+                  ⭐ ${trip.rating_avg.toFixed(1)}
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    // ============== SEARCH FORM ==============
+    function setupSearchForm() {
+      const form = document.getElementById('search-form');
+      if (!form) return;
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const destination = document.getElementById('search-destination').value.trim();
+        const date = document.getElementById('search-date').value;
+
+        const params = new URLSearchParams();
+        if (destination) params.set('q', destination);
+        if (date) params.set('date', date);
+
+        window.location.href = 'trips.html' + (params.toString() ? '?' + params.toString() : '');
+      });
+    }
+  </script>
+
+</body>
+</html>
