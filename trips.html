@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#0F766E">
+  <title>الرحلات — ترحال</title>
+
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    /* ===== LAYOUT ===== */
+    .trips-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 20px 0;
+    }
+    @media (min-width: 900px) {
+      .trips-layout {
+        grid-template-columns: 280px 1fr;
+      }
+    }
+
+    /* ===== FILTERS PANEL ===== */
+    .filters-panel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      height: fit-content;
+      position: sticky;
+      top: 80px;
+    }
+    .filter-group {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-group:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .filter-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+    .filter-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .filter-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 6px 0;
+    }
+    .filter-check input[type="checkbox"],
+    .filter-check input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .filter-price-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .filter-price-inputs input {
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    .mobile-filter-toggle {
+      display: flex;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    @media (min-width: 900px) {
+      .mobile-filter-toggle { display: none; }
+    }
+    .filters-panel.mobile-closed { display: none; }
+    @media (min-width: 900px) {
+      .filters-panel.mobile-closed { display: block; }
+    }
+
+    /* ===== RESULTS HEADER ===== */
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .results-count {
+      font-size: 15px;
+      color: var(--text-medium);
+    }
+    .results-count strong {
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .sort-select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      background: white;
+      cursor: pointer;
+    }
+
+    /* ===== SEARCH BAR TOP ===== */
+    .top-search-bar {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+    .top-search-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    @media (min-width: 640px) {
+      .top-search-grid {
+        grid-template-columns: 1fr 1fr 1fr auto;
+      }
+    }
+    .top-search-grid input {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      width: 100%;
+    }
+    .top-search-grid input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <header id="app-header"></header>
+
+  <main class="tarhal-container">
+
+    <!-- ===== TOP SEARCH ===== -->
+    <div class="top-search-bar">
+      <form class="top-search-grid" id="top-search-form">
+        <input type="text" id="q-from" placeholder="من (الدولة أو المدينة)">
+        <input type="text" id="q-to" placeholder="إلى (الدولة أو المدينة)">
+        <input type="date" id="q-date">
+        <button type="submit" class="tarhal-btn tarhal-btn-primary">ابحث</button>
+      </form>
+    </div>
+
+    <h1 style="font-size: 22px; font-weight: 700; margin-bottom: 16px;" id="page-title">الرحلات</h1>
+
+    <!-- ===== MOBILE FILTER TOGGLE ===== -->
+    <button class="tarhal-btn tarhal-btn-secondary mobile-filter-toggle" id="filter-toggle">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+      </svg>
+      <span>الفلاتر</span>
+    </button>
+
+    <div class="trips-layout">
+
+      <!-- ===== FILTERS ===== -->
+      <aside class="filters-panel mobile-closed" id="filters-panel">
+
+        <div class="filter-group">
+          <div class="filter-title">نوع الرحلة</div>
+          <div class="filter-options" id="type-filters"></div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">السعر</div>
+          <div class="filter-price-inputs">
+            <input type="number" id="min-price" placeholder="من">
+            <input type="number" id="max-price" placeholder="إلى">
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">المدة (أيام)</div>
+          <div class="filter-options">
+            <label class="filter-check"><input type="radio" name="duration" value=""> الكل</label>
+            <label class="filter-check"><input type="radio" name="duration" value="1-5"> 1 - 5 أيام</label>
+            <label class="filter-check"><input type="radio" name="duration" value="6-10"> 6 - 10 أيام</label>
+            <label class="filter-check"><input type="radio" name="duration" value="11-999"> أكثر من 10</label>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">التقييم</div>
+          <div class="filter-options">
+            <label class="filter-check"><input type="radio" name="rating" value=""> الكل</label>
+            <label class="filter-check"><input type="radio" name="rating" value="4"> ⭐ 4+</label>
+            <label class="filter-check"><input type="radio" name="rating" value="4.5"> ⭐ 4.5+</label>
+          </div>
+        </div>
+
+        <button class="tarhal-btn tarhal-btn-outline tarhal-btn-block" id="clear-filters">مسح الفلاتر</button>
+
+      </aside>
+
+      <!-- ===== RESULTS ===== -->
+      <section>
+
+        <div class="results-header">
+          <div class="results-count">
+            <strong id="results-number">0</strong> نتيجة
+          </div>
+          <select class="sort-select" id="sort-select">
+            <option value="newest">الأحدث</option>
+            <option value="price-low">السعر: من الأقل للأعلى</option>
+            <option value="price-high">السعر: من الأعلى للأقل</option>
+            <option value="rating">الأعلى تقييمًا</option>
+          </select>
+        </div>
+
+        <div class="tarhal-grid tarhal-grid-3" id="trips-grid"></div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <footer id="app-footer"></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/app.js"></script>
+
+  <script>
+    // ============================================
+    // STATE
+    // ============================================
+    let allTrips = [];
+    let filteredTrips = [];
+    let filters = {
+      types: [],
+      minPrice: null,
+      maxPrice: null,
+      duration: '',
+      rating: null,
+      from: '',
+      to: '',
+      date: '',
+    };
+
+    // ============================================
+    // INIT
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      initApp();
+      loadInitialFilters();
+      renderTypeFilters();
+      setupFilterEvents();
+      setupSearchBar();
+      applyFiltersAndRender();
+    });
+
+    // ============================================
+    // READ QUERY PARAMS
+    // ============================================
+    function loadInitialFilters() {
+      const params = new URLSearchParams(window.location.search);
+      const type = params.get('type');
+      const from = params.get('from');
+      const to = params.get('to');
+      const date = params.get('date');
+      const q = params.get('q');
+
+      if (type) filters.types = [type];
+      if (from) { filters.from = from; document.getElementById('q-from').value = from; }
+      if (to) { filters.to = to; document.getElementById('q-to').value = to; }
+      if (date) { filters.date = date; document.getElementById('q-date').value = date; }
+      if (q) { filters.to = q; document.getElementById('q-to').value = q; }
+
+      allTrips = [...MOCK_TRIPS];
+    }
+
+    // ============================================
+    // TYPE FILTERS
+    // ============================================
+    function renderTypeFilters() {
+      const container = document.getElementById('type-filters');
+      const types = [
+        { key: 'umrah' }, { key: 'hajj' }, { key: 'leisure' },
+        { key: 'adventure' }, { key: 'family' }, { key: 'honeymoon' },
+        { key: 'cruise' }, { key: 'cultural' },
+      ];
+      container.innerHTML = types.map(tp => `
+        <label class="filter-check">
+          <input type="checkbox" data-type="${tp.key}" ${filters.types.includes(tp.key) ? 'checked' : ''}>
+          ${t('tripTypes.' + tp.key)}
+        </label>
+      `).join('');
+    }
+
+    // ============================================
+    // FILTER EVENTS
+    // ============================================
+    function setupFilterEvents() {
+      document.querySelectorAll('#type-filters input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', () => {
+          filters.types = Array.from(document.querySelectorAll('#type-filters input:checked'))
+            .map(el => el.dataset.type);
+          applyFiltersAndRender();
+        });
+      });
+
+      document.getElementById('min-price').addEventListener('input', (e) => {
+        filters.minPrice = e.target.value ? Number(e.target.value) : null;
+        debounceApply();
+      });
+      document.getElementById('max-price').addEventListener('input', (e) => {
+        filters.maxPrice = e.target.value ? Number(e.target.value) : null;
+        debounceApply();
+      });
+
+      document.querySelectorAll('input[name="duration"]').forEach(r => {
+        r.addEventListener('change', (e) => {
+          filters.duration = e.target.value;
+          applyFiltersAndRender();
+        });
+      });
+
+      document.querySelectorAll('input[name="rating"]').forEach(r => {
+        r.addEventListener('change', (e) => {
+          filters.rating = e.target.value ? Number(e.target.value) : null;
+          applyFiltersAndRender();
+        });
+      });
+
+      document.getElementById('sort-select').addEventListener('change', () => {
+        applyFiltersAndRender();
+      });
+
+      document.getElementById('clear-filters').addEventListener('click', () => {
+        filters = { types: [], minPrice: null, maxPrice: null, duration: '', rating: null, from: '', to: '', date: '' };
+        document.querySelectorAll('#type-filters input').forEach(cb => cb.checked = false);
+        document.getElementById('min-price').value = '';
+        document.getElementById('max-price').value = '';
+        document.querySelectorAll('input[name="duration"], input[name="rating"]').forEach(r => r.checked = r.value === '');
+        applyFiltersAndRender();
+      });
+
+      document.getElementById('filter-toggle').addEventListener('click', () => {
+        document.getElementById('filters-panel').classList.toggle('mobile-closed');
+      });
+    }
+
+    let _debounceTimer = null;
+    function debounceApply() {
+      clearTimeout(_debounceTimer);
+      _debounceTimer = setTimeout(applyFiltersAndRender, 300);
+    }
+
+    // ============================================
+    // SEARCH BAR
+    // ============================================
+    function setupSearchBar() {
+      document.getElementById('top-search-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        filters.from = document.getElementById('q-from').value.trim();
+        filters.to = document.getElementById('q-to').value.trim();
+        filters.date = document.getElementById('q-date').value;
+        applyFiltersAndRender();
+      });
+    }
+
+    // ============================================
+    // APPLY FILTERS + RENDER
+    // ============================================
+    function applyFiltersAndRender() {
+      let list = [...allTrips];
+
+      // Type
+      if (filters.types.length > 0) {
+        list = list.filter(trip => filters.types.includes(trip.trip_type));
+      }
+
+      // Price
+      if (filters.minPrice != null) list = list.filter(t => t.base_price >= filters.minPrice);
+      if (filters.maxPrice != null) list = list.filter(t => t.base_price <= filters.maxPrice);
+
+      // Duration
+      if (filters.duration) {
+        const [min, max] = filters.duration.split('-').map(Number);
+        list = list.filter(t => t.days >= min && t.days <= max);
+      }
+
+      // Rating
+      if (filters.rating != null) {
+        list = list.filter(t => (t.rating_avg || 0) >= filters.rating);
+      }
+
+      // Text search (from/to)
+      if (filters.to) {
+        const q = filters.to.toLowerCase();
+        list = list.filter(t =>
+          t.title_ar.toLowerCase().includes(q) ||
+          t.title_en.toLowerCase().includes(q) ||
+          (t.destination_country && t.destination_country.toLowerCase().includes(q))
+        );
+      }
+
+      // Sort
+      const sortBy = document.getElementById('sort-select').value;
+      if (sortBy === 'price-low') list.sort((a, b) => a.base_price - b.base_price);
+      else if (sortBy === 'price-high') list.sort((a, b) => b.base_price - a.base_price);
+      else if (sortBy === 'rating') list.sort((a, b) => (b.rating_avg || 0) - (a.rating_avg || 0));
+      else list.sort((a, b) => Number(b.id) - Number(a.id));
+
+      filteredTrips = list;
+      document.getElementById('results-number').textContent = list.length;
+      renderTrips();
+    }
+
+    // ============================================
+    // RENDER TRIPS GRID
+    // ============================================
+    function renderTrips() {
+      const grid = document.getElementById('trips-grid');
+      const isAr = isRTL();
+
+      if (filteredTrips.length === 0) {
+        grid.innerHTML = `
+          <div class="tarhal-empty" style="grid-column: 1 / -1;">
+            <div class="tarhal-empty-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
+            <div class="tarhal-empty-title">${t('trips.noResults')}</div>
+            <div class="tarhal-empty-text">${t('trips.noResultsDesc')}</div>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filteredTrips.map(trip => `
+        <a href="trip.html?slug=${trip.slug}" class="tarhal-trip-card">
+          <div class="tarhal-trip-card-image">
+            <div class="tarhal-trip-card-placeholder">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              </svg>
+            </div>
+            <div class="tarhal-trip-card-badge">${t('tripTypes.' + trip.trip_type)}</div>
+          </div>
+          <div class="tarhal-trip-card-body">
+            <h3 class="tarhal-trip-card-title">${isAr ? trip.title_ar : trip.title_en}</h3>
+            <div class="tarhal-trip-card-meta">
+              <span class="tarhal-trip-card-meta-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                ${trip.days} ${t('trips.days')}
+              </span>
+            </div>
+            <div class="tarhal-trip-card-footer">
+              <div>
+                <div class="tarhal-trip-card-price-label">${t('trip.price')}</div>
+                <div class="tarhal-trip-card-price">${formatPrice(trip.base_price, trip.currency)}</div>
+              </div>
+              ${trip.rating_avg > 0 ? `<div class="tarhal-trip-card-rating">⭐ ${trip.rating_avg.toFixed(1)}</div>` : ''}
+            </div>
+          </div>
+        </a>
+      `).join('');
+    }
+  </script>
+
+</body>
+</html>
