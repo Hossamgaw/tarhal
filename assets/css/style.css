@@ -1085,3 +1085,94 @@ ul {
 .tarhal-justify-between { justify-content: space-between; }
 .tarhal-gap-1 { gap: 8px; }
 .tarhal-gap-2 { gap: 16px; }
+
+/* ============================================
+   MOBILE FULL-WIDTH — Banner Fix
+   ============================================ */
+@media (max-width: 640px) {
+  .tarhal-container {
+    padding-inline: 0;
+  }
+
+  /* Sections that need inner padding */
+  .tarhal-hero {
+    padding: 32px 12px 40px;
+  }
+  .tarhal-hero-search {
+    padding: 12px;
+  }
+  .tarhal-section {
+    padding: 32px 0;
+  }
+  .tarhal-section-header,
+  .tarhal-grid {
+    padding-inline: 12px;
+  }
+
+  /* Cards — remove border radius, full width */
+  .tarhal-trip-card {
+    border-radius: 12px;
+  }
+  .tarhal-trip-card-body {
+    padding: 14px;
+  }
+  .tarhal-type-card {
+    border-radius: 12px;
+  }
+
+  /* Trip details page */
+  .trip-container {
+    padding: 0;
+  }
+  .trip-header-card {
+    border-radius: 20px 20px 0 0;
+    padding: 20px 16px;
+  }
+  .trip-price-card {
+    border-radius: 0;
+    border-inline: none;
+    padding: 20px 16px;
+    margin-bottom: 6px;
+  }
+  .tabs-nav {
+    padding-inline: 8px;
+    background: white;
+    margin-bottom: 0;
+  }
+  .tab-content {
+    padding: 8px 12px;
+  }
+  .info-card {
+    border-radius: 0;
+    border-inline: none;
+    padding: 16px;
+    margin-bottom: 6px;
+  }
+
+  /* Trips page */
+  .top-search-bar {
+    border-radius: 0;
+    border-inline: none;
+    margin: 0 0 12px 0;
+    padding: 12px;
+  }
+  .mobile-filter-toggle {
+    border-radius: 0;
+    border-inline: none;
+    margin-bottom: 6px;
+  }
+  .filters-panel {
+    border-radius: 0;
+    border-inline: none;
+    margin-bottom: 12px;
+  }
+  .results-header {
+    padding-inline: 12px;
+  }
+  .trips-layout {
+    gap: 12px;
+  }
+  .trips-layout section {
+    padding-inline: 12px;
+  }
+}
