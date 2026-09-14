@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#0F766E">
+  <title>تفاصيل الرحلة — ترحال</title>
+
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    #trip-loading, #trip-notfound {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-gray);
+    }
+    .trip-cover {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #0F766E 0%, #14B8A6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 64px;
+      position: relative;
+      overflow: hidden;
+      max-height: 420px;
+    }
+    .trip-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .trip-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 16px;
+      margin-top: -60px;
+      position: relative;
+      z-index: 2;
+    }
+    .trip-header-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .trip-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
+      color: var(--text-dark);
+    }
+    .trip-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 14px;
+      color: var(--text-gray);
+      margin-bottom: 16px;
+    }
+    .trip-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .trip-meta-item svg {
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .trip-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(15,118,110,0.1);
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .trip-badge-verified {
+      background: rgba(22,163,74,0.1);
+      color: var(--success);
+    }
+    .trip-price-card {
+      background: white;
+      border: 2px solid var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .trip-price-label {
+      font-size: 13px;
+      color: var(--text-gray);
+      margin-bottom: 4px;
+    }
+    .trip-price-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+    .trip-price-per {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-gray);
+    }
+    .trip-seats {
+      font-size: 13px;
+      color: var(--warning);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .tabs-nav {
+      display: flex;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 20px;
+      overflow-x: auto;
+      gap: 4px;
+    }
+    .tabs-nav button {
+      padding: 12px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-gray);
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+      background: none;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .tabs-nav button.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .info-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .info-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-card-text {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-medium);
+      white-space: pre-wrap;
+    }
+    .check-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .check-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+      color: var(--text-medium);
+      line-height: 1.5;
+    }
+    .check-list li svg {
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <header id="app-header"></header>
+
+  <div id="trip-loading">
+    <div class="tarhal-spinner"></div>
+    <p>جاري تحميل الرحلة…</p>
+  </div>
+
+  <div id="trip-content" style="display:none;">
+
+    <!-- ===== COVER ===== -->
+    <div class="trip-cover" id="trip-cover"></div>
+
+    <!-- ===== MAIN CONTAINER ===== -->
+    <div class="trip-container">
+
+      <!-- ===== HEADER CARD ===== -->
+      <div class="trip-header-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+          <div class="trip-badge" id="trip-type-badge">—</div>
+          <div id="trip-company-badge"></div>
+        </div>
+
+        <h1 class="trip-title" id="trip-title">—</h1>
+
+        <div class="trip-meta" id="trip-meta"></div>
+      </div>
+
+      <!-- ===== PRICE CARD ===== -->
+      <div class="trip-price-card">
+        <div class="trip-price-label">السعر</div>
+        <div class="trip-price-value">
+          <span id="trip-price">—</span>
+          <span class="trip-price-per"> / للفرد</span>
+        </div>
+        <div class="trip-seats" id="trip-seats"></div>
+
+        <button class="tarhal-btn tarhal-btn-primary tarhal-btn-block tarhal-btn-lg" id="book-btn" style="margin-bottom:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M9 12l2 2 4-4"/>
+            <circle cx="12" cy="12" r="10"/>
+          </svg>
+          احجز الآن
+        </button>
+
+        <button class="tarhal-btn tarhal-btn-outline tarhal-btn-block" id="compare-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 3 21 3 21 8"/>
+            <line x1="4" y1="20" x2="21" y2="3"/>
+            <polyline points="21 16 21 21 16 21"/>
+            <line x1="15" y1="15" x2="21" y2="21"/>
+            <line x1="4" y1="4" x2="9" y2="9"/>
+          </svg>
+          أضف للمقارنة
+        </button>
+      </div>
+
+      <!-- ===== TABS ===== -->
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="overview">نظرة عامة</button>
+        <button class="tab-btn" data-tab="itinerary">خط سير الرحلة</button>
+        <button class="tab-btn" data-tab="included">المشمول</button>
+        <button class="tab-btn" data-tab="requirements">المستندات المطلوبة</button>
+      </div>
+
+      <!-- ===== TAB: OVERVIEW ===== -->
+      <div class="tab-content active" data-tab-content="overview">
+        <div class="info-card">
+          <div class="info-card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            الوصف
+          </div>
+          <div class="info-card-text" id="trip-description">—</div>
+        </div>
+
+        <div class="info-card" id="company-card" style="display:none;">
+          <div class="info-card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h.01M15 17h.01"/>
+            </svg>
+            الشركة المنظمة
+          </div>
+          <div id="company-info" style="font-size:14px; color:var(--text-medium);"></div>
+        </div>
+      </div>
+
+      <!-- ===== TAB: ITINERARY ===== -->
+      <div class="tab-content" data-tab-content="itinerary">
+        <div id="itinerary-list"></div>
+      </div>
+
+      <!-- ===== TAB: INCLUDED ===== -->
+      <div class="tab-content" data-tab-content="included">
+        <div class="info-card">
+          <div class="info-card-title" style="color: var(--success);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            المشمول في السعر
+          </div>
+          <ul class="check-list" id="included-list"></ul>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-title" style="color: var(--error);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            غير المشمول
+          </div>
+          <ul class="check-list" id="excluded-list"></ul>
+        </div>
+      </div>
+
+      <!-- ===== TAB: REQUIREMENTS ===== -->
+      <div class="tab-content" data-tab-content="requirements">
+        <div class="info-card">
+          <div class="info-card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+            المستندات المطلوبة
+          </div>
+          <ul class="check-list" id="requirements-list"></ul>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="trip-notfound" style="display:none;">
+    <h2 style="margin-bottom:12px;">الرحلة غير موجودة</h2>
+    <p style="margin-bottom:20px;">الرابط اللي فتحته مش صحيح أو الرحلة اتشالت.</p>
+    <a href="trips.html" class="tarhal-btn tarhal-btn-primary">تصفح الرحلات</a>
+  </div>
+
+  <footer id="app-footer"></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/app.js"></script>
+
+  <script>
+    // ============================================
+    // STATE
+    // ============================================
+    let currentTrip = null;
+
+    // ============================================
+    // INIT
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      initApp();
+      loadTrip();
+    });
+
+    // ============================================
+    // LOAD TRIP
+    // ============================================
+    function loadTrip() {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('slug');
+
+      if (!slug) return showNotFound();
+
+      const trip = MOCK_TRIPS.find(t => t.slug === slug);
+      if (!trip) return showNotFound();
+
+      currentTrip = trip;
+      renderTrip(trip);
+    }
+
+    function showNotFound() {
+      document.getElementById('trip-loading').style.display = 'none';
+      document.getElementById('trip-notfound').style.display = 'block';
+    }
+
+    // ============================================
+    // RENDER TRIP
+    // ============================================
+    function renderTrip(trip) {
+      const isAr = isRTL();
+
+      // Hide loading, show content
+      document.getElementById('trip-loading').style.display = 'none';
+      document.getElementById('trip-content').style.display = 'block';
+
+      // Page title
+      document.title = (isAr ? trip.title_ar : trip.title_en) + ' — ترحال';
+
+      // Cover
+      const cover = document.getElementById('trip-cover');
+      if (trip.cover_url) {
+        cover.innerHTML = `<img src="${trip.cover_url}" alt="">`;
+      } else {
+        cover.innerHTML = '🏝️';
+      }
+
+      // Type badge
+      document.getElementById('trip-type-badge').textContent = t('tripTypes.' + trip.trip_type);
+
+      // Company badge (mock — first trip only for demo)
+      const companyBadge = document.getElementById('trip-company-badge');
+      if (trip.id === '1' || trip.id === '4') {
+        companyBadge.innerHTML = `<span class="trip-badge trip-badge-verified">✓ شركة موثقة</span>`;
+      }
+
+      // Title
+      document.getElementById('trip-title').textContent = isAr ? trip.title_ar : trip.title_en;
+
+      // Meta
+      const destCountry = getCountryByCode(trip.destination_country);
+      const destName = destCountry ? (isAr ? destCountry.nameAr : destCountry.nameEn) : trip.destination_country;
+
+      document.getElementById('trip-meta').innerHTML = `
+        <div class="trip-meta-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          ${trip.days} ${t('trips.days')} / ${trip.nights} ${t('trips.nights')}
+        </div>
+        <div class="trip-meta-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          ${destName}
+        </div>
+        ${trip.rating_avg > 0 ? `
+        <div class="trip-meta-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          ${trip.rating_avg.toFixed(1)}
+        </div>
+        ` : ''}
+      `;
+
+      // Price
+      document.getElementById('trip-price').textContent = formatPrice(trip.base_price, trip.currency);
+
+      // Seats
+      const seats = document.getElementById('trip-seats');
+      if (trip.seats_available > 0) {
+        seats.textContent = `⚡ ${trip.seats_available} مقعد متبقي`;
+      } else {
+        seats.textContent = '❌ مكتمل';
+        document.getElementById('book-btn').disabled = true;
+      }
+
+      // Description
+      document.getElementById('trip-description').textContent =
+        isAr ? (trip.description_ar || '—') : (trip.description_en || trip.description_ar || '—');
+
+      // Company info
+      if (trip.id === '1') {
+        document.getElementById('company-card').style.display = 'block';
+        document.getElementById('company-info').innerHTML = `
+          <div style="font-weight:600; margin-bottom:4px;">شركة النور للسياحة</div>
+          <div style="font-size:13px;">شركة متخصصة في تنظيم رحلات العمرة والحج منذ 2010.</div>
+        `;
+      }
+
+      // Itinerary (mock timeline)
+      renderItinerary(trip);
+
+      // Included / Excluded
+      renderList('included-list', [
+        'تذاكر الطيران ذهاب وعودة',
+        'الإقامة في الفندق المذكور',
+        'الوجبات المذكورة في البرنامج',
+        'الانتقالات الداخلية',
+        'المرشد السياحي',
+      ], 'check');
+
+      renderList('excluded-list', [
+        'المصاريف الشخصية',
+        'التأمين الصحي',
+        'الأنشطة الاختيارية',
+        'الوجبات غير المذكورة',
+      ], 'x');
+
+      // Requirements
+      renderList('requirements-list', [
+        'جواز سفر ساري لمدة 6 أشهر على الأقل',
+        'صورة شخصية حديثة',
+        'التأشيرة (يتم استخراجها بواسطة الشركة)',
+        'شهادة التطعيم (إن وجدت)',
+      ], 'doc');
+
+      // Setup tabs
+      setupTabs();
+
+      // Setup buttons
+      setupButtons(trip);
+    }
+
+    // ============================================
+    // RENDER ITINERARY
+    // ============================================
+    function renderItinerary(trip) {
+      const container = document.getElementById('itinerary-list');
+      const isAr = isRTL();
+
+      // Sample itinerary items — will be replaced with real data later
+      const items = [
+        { day: 1, type: 'flight', icon: '✈️', title: 'الإقلاع من مطار القاهرة', time: '08:00', note: 'رحلة مباشرة' },
+        { day: 1, type: 'hotel', icon: '🏨', title: 'الوصول وتسجيل الدخول للفندق', time: '14:00', note: 'فندق 5 نجوم' },
+        { day: 1, type: 'meal', icon: '🍽️', title: 'عشاء في الفندق', time: '20:00', note: '' },
+        { day: 2, type: 'activity', icon: '🕌', title: 'زيارة المعالم الرئيسية', time: '09:00', note: 'مع مرشد' },
+        { day: 2, type: 'meal', icon: '🍽️', title: 'غداء', time: '13:00', note: '' },
+        { day: 3, type: 'activity', icon: '🛍️', title: 'يوم تسوق حر', time: '10:00', note: 'اختياري' },
+        { day: 4, type: 'hotel', icon: '🏨', title: 'تسجيل الخروج', time: '11:00', note: '' },
+        { day: 4, type: 'flight', icon: '✈️', title: 'العودة إلى القاهرة', time: '17:00', note: '' },
+      ];
+
+      const byDay = {};
+      items.forEach(it => {
+        if (!byDay[it.day]) byDay[it.day] = [];
+        byDay[it.day].push(it);
+      });
+
+      container.innerHTML = Object.keys(byDay).map(day => `
+        <div class="info-card">
+          <div class="info-card-title">
+            <span style="display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; background:var(--primary); color:white; border-radius:50%; font-size:13px;">${day}</span>
+            اليوم ${day}
+          </div>
+          <div style="position:relative; padding-inline-start:12px; border-inline-start: 2px solid var(--border); margin-inline-start:16px;">
+            ${byDay[day].map(it => `
+              <div style="position:relative; padding:10px 0 10px 16px;">
+                <span style="position:absolute; inset-inline-start:-17px; top:14px; width:12px; height:12px; border-radius:50%; background:var(--primary); border:2px solid white; box-shadow:0 0 0 2px var(--primary);"></span>
+                <div style="display:flex; gap:10px; align-items:flex-start;">
+                  <span style="font-size:20px; line-height:1;">${it.icon}</span>
+                  <div style="flex:1;">
+                    <div style="font-weight:600; font-size:14px; color:var(--text-dark); margin-bottom:2px;">${it.title}</div>
+                    <div style="font-size:12px; color:var(--text-gray);">${it.time}${it.note ? ' · ' + it.note : ''}</div>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ============================================
+    // RENDER LIST
+    // ============================================
+    function renderList(elementId, items, iconType) {
+      const container = document.getElementById(elementId);
+      if (!container) return;
+
+      let icon = '';
+      if (iconType === 'check') {
+        icon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" style="flex-shrink:0; margin-top:3px;"><polyline points="20 6 9 17 4 12"/></svg>';
+      } else if (iconType === 'x') {
+        icon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--error)" stroke-width="2.5" style="flex-shrink:0; margin-top:3px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+      } else {
+        icon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" style="flex-shrink:0; margin-top:3px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+      }
+
+      container.innerHTML = items.map(item => `<li>${icon} <span>${item}</span></li>`).join('');
+    }
+
+    // ============================================
+    // SETUP TABS
+    // ============================================
+    function setupTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = btn.dataset.tab;
+
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+          btn.classList.add('active');
+          document.querySelector(`.tab-content[data-tab-content="${tab}"]`).classList.add('active');
+        });
+      });
+    }
+
+    // ============================================
+    // SETUP BUTTONS
+    // ============================================
+    function setupButtons(trip) {
+      // Book button
+      document.getElementById('book-btn').addEventListener('click', () => {
+        const user = getCurrentUser();
+        if (!user) {
+          showToast('من فضلك سجّل دخولك أولاً', 'error');
+          setTimeout(() => {
+            window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+          }, 1200);
+          return;
+        }
+        // Will implement booking flow later
+        showToast('سيتم تفعيل الحجز قريبًا', 'info');
+      });
+
+      // Compare button
+      document.getElementById('compare-btn').addEventListener('click', () => {
+        showToast('سيتم تفعيل المقارنة قريبًا', 'info');
+      });
+    }
+  </script>
+
+</body>
+</html>
