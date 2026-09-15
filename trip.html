@@ -848,6 +848,20 @@ function prevImage() {
   currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
   updateLightbox();
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('lb-next').addEventListener('click', nextImage);
+  document.getElementById('lb-prev').addEventListener('click', prevImage);
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target.id === 'lightbox') closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'ArrowLeft') prevImage();
+  });
+});
   </script>
 
 </body>
