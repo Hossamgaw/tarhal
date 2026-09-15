@@ -371,7 +371,16 @@
   </style>
 </head>
 <body>
-
+<div id="error-box" style="display:none; position:fixed; top:0; left:0; right:0; background:#DC2626; color:white; padding:12px; z-index:99999; font-size:13px; direction:ltr; text-align:left; font-family:monospace; max-height:40vh; overflow:auto;"></div>
+<script>
+window.onerror = function(msg, url, line, col) {
+  var box = document.getElementById('error-box');
+  if (box) {
+    box.style.display = 'block';
+    box.textContent += 'ERROR: ' + msg + ' | line ' + line + ':' + col + '\n';
+  }
+};
+</script>
   <header id="app-header"></header>
 
   <div id="trip-loading">
