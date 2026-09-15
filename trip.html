@@ -784,25 +784,61 @@ let galleryImages = [];
 let currentImageIndex = 0;
 
 function renderGallery(trip) {
-  const tripPhotos = [
-    { url: 'https://picsum.photos/seed/hotel1/800/800', label: 'الفندق' },
-    { url: 'https://picsum.photos/seed/room1/800/800', label: 'الغرفة' },
-    { url: 'https://picsum.photos/seed/food1/800/800', label: 'الوجبات' },
-    { url: 'https://picsum.photos/seed/transport1/800/800', label: 'المواصلات' },
-    { url: 'https://picsum.photos/seed/group1/800/800', label: 'الرحلة' },
-    { url: 'https://picsum.photos/seed/view1/800/800', label: 'الإطلالة' },
+  const albums = [
+    {
+      id: 'hotel',
+      icon: '🏨',
+      title: 'الفندق',
+      photos: [
+        { url: 'https://picsum.photos/seed/hotel-ext/800/800', label: 'من الخارج' },
+        { url: 'https://picsum.photos/seed/hotel-lobby/800/800', label: 'اللوبي' },
+        { url: 'https://picsum.photos/seed/hotel-room/800/800', label: 'الغرفة' },
+        { url: 'https://picsum.photos/seed/hotel-bath/800/800', label: 'الحمام' },
+      ],
+    },
+    {
+      id: 'flight',
+      icon: '✈️',
+      title: 'الطيران',
+      photos: [
+        { url: 'https://picsum.photos/seed/flight-1/800/800', label: 'الطائرة' },
+        { url: 'https://picsum.photos/seed/flight-2/800/800', label: 'المقصورة' },
+      ],
+    },
+    {
+      id: 'food',
+      icon: '🍽️',
+      title: 'الوجبات',
+      photos: [
+        { url: 'https://picsum.photos/seed/food-1/800/800', label: 'الإفطار' },
+        { url: 'https://picsum.photos/seed/food-2/800/800', label: 'الغداء' },
+        { url: 'https://picsum.photos/seed/food-3/800/800', label: 'العشاء' },
+      ],
+    },
+    {
+      id: 'transport',
+      icon: '🚌',
+      title: 'المواصلات',
+      photos: [
+        { url: 'https://picsum.photos/seed/bus-1/800/800', label: 'الباص' },
+        { url: 'https://picsum.photos/seed/car-1/800/800', label: 'السيارة' },
+      ],
+    },
   ];
 
+  // Landmarks album (varies by trip type)
   const landmarksByType = {
     umrah: [
       { url: 'https://picsum.photos/seed/kaaba/800/800', label: 'الكعبة المشرفة' },
-      { url: 'https://picsum.photos/seed/masjid/800/800', label: 'المسجد النبوي' },
+      { url: 'https://picsum.photos/seed/nabawi/800/800', label: 'المسجد النبوي' },
       { url: 'https://picsum.photos/seed/makkah/800/800', label: 'مكة المكرمة' },
       { url: 'https://picsum.photos/seed/madinah/800/800', label: 'المدينة المنورة' },
+      { url: 'https://picsum.photos/seed/haram/800/800', label: 'الحرم' },
     ],
     hajj: [
       { url: 'https://picsum.photos/seed/mina/800/800', label: 'منى' },
       { url: 'https://picsum.photos/seed/arafat/800/800', label: 'عرفة' },
+      { url: 'https://picsum.photos/seed/muzdalifah/800/800', label: 'مزدلفة' },
       { url: 'https://picsum.photos/seed/kaaba2/800/800', label: 'الكعبة' },
     ],
     leisure: [
@@ -817,39 +853,54 @@ function renderGallery(trip) {
     ],
   };
 
-  const landmarks = landmarksByType[trip.trip_type] || [
-    { url: 'https://picsum.photos/seed/landmark1/800/800', label: 'معلم سياحي' },
-    { url: 'https://picsum.photos/seed/landmark2/800/800', label: 'معلم تاريخي' },
-    { url: 'https://picsum.photos/seed/landmark3/800/800', label: 'ساحة' },
-    { url: 'https://picsum.photos/seed/landmark4/800/800', label: 'متحف' },
+  const landmarkPhotos = landmarksByType[trip.trip_type] || [
+    { url: 'https://picsum.photos/seed/lm1/800/800', label: 'معلم سياحي' },
+    { url: 'https://picsum.photos/seed/lm2/800/800', label: 'معلم تاريخي' },
+    { url: 'https://picsum.photos/seed/lm3/800/800', label: 'ساحة' },
   ];
 
-  galleryImages = [
-    ...tripPhotos.map(p => ({ url: p.url.replace('800/800', '1600/1200'), label: p.label })),
-    ...landmarks.map(p => ({ url: p.url.replace('800/800', '1600/1200'), label: p.label })),
-  ];
+  albums.push({
+    id: 'landmarks',
+    icon: '🕌',
+    title: 'المزارات والأماكن',
+    photos: landmarkPhotos,
+  });
 
-  document.getElementById('trip-photos').innerHTML = tripPhotos.map((p, i) => `
-    <div class="photo-item" onclick="openLightbox(${i})">
-      <img src="${p.url}" alt="${p.label}" loading="lazy">
-      <div class="photo-item-label">${p.label}</div>
-    </div>
-  `).join('');
+  // Save to global for lightbox
+  window._galleryAlbums = albums;
 
-  const offset = tripPhotos.length;
-  document.getElementById('trip-landmarks').innerHTML = landmarks.map((p, i) => `
-    <div class="photo-item" onclick="openLightbox(${offset + i})">
-      <img src="${p.url}" alt="${p.label}" loading="lazy">
-      <div class="photo-item-label">${p.label}</div>
+  // Render
+  const container = document.getElementById('gallery-albums');
+  container.innerHTML = albums.map((album, ai) => `
+    <div class="album">
+      <div class="album-header">
+        <div class="album-title">
+          <span class="album-title-icon">${album.icon}</span>
+          ${album.title}
+        </div>
+        <span class="album-count">${album.photos.length} صور</span>
+      </div>
+      <div class="album-grid">
+        ${album.photos.map((p, pi) => `
+          <div class="album-photo" onclick="openLightbox(${ai}, ${pi})">
+            <img src="${p.url}" alt="${p.label}" loading="lazy">
+            <div class="album-photo-label">${p.label}</div>
+          </div>
+        `).join('')}
+      </div>
     </div>
   `).join('');
 }
 
 // ============================================
-// LIGHTBOX
+// LIGHTBOX — Album-aware
 // ============================================
-function openLightbox(index) {
-  currentImageIndex = index;
+let currentAlbumIndex = 0;
+let currentPhotoIndex = 0;
+
+function openLightbox(albumIndex, photoIndex) {
+  currentAlbumIndex = albumIndex;
+  currentPhotoIndex = photoIndex;
   updateLightbox();
   document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -861,33 +912,40 @@ function closeLightbox() {
 }
 
 function updateLightbox() {
-  const img = galleryImages[currentImageIndex];
-  if (!img) return;
-  document.getElementById('lb-img').src = img.url;
-  document.getElementById('lb-caption').textContent = img.label || '';
+  const albums = window._galleryAlbums || [];
+  const album = albums[currentAlbumIndex];
+  if (!album) return;
+
+  const photo = album.photos[currentPhotoIndex];
+  if (!photo) return;
+
+  // Use bigger image for lightbox
+  const bigUrl = photo.url.replace('800/800', '1600/1200');
+  document.getElementById('lb-img').src = bigUrl;
+  document.getElementById('lb-caption').textContent =
+    `${album.icon} ${album.title} — ${photo.label}`;
+
+  // Hide nav arrows if only 1 photo in album
+  const hasMultiple = album.photos.length > 1;
+  document.getElementById('lb-prev').style.display = hasMultiple ? 'flex' : 'none';
+  document.getElementById('lb-next').style.display = hasMultiple ? 'flex' : 'none';
 }
 
 function nextImage() {
-  currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+  const albums = window._galleryAlbums || [];
+  const album = albums[currentAlbumIndex];
+  if (!album) return;
+  currentPhotoIndex = (currentPhotoIndex + 1) % album.photos.length;
   updateLightbox();
 }
 
 function prevImage() {
-  currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+  const albums = window._galleryAlbums || [];
+  const album = albums[currentAlbumIndex];
+  if (!album) return;
+  currentPhotoIndex = (currentPhotoIndex - 1 + album.photos.length) % album.photos.length;
   updateLightbox();
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('lb-next').addEventListener('click', nextImage);
-  document.getElementById('lb-prev').addEventListener('click', prevImage);
-  document.getElementById('lightbox').addEventListener('click', (e) => {
-    if (e.target.id === 'lightbox') closeLightbox();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (!document.getElementById('lightbox').classList.contains('open')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight') nextImage();
-    if (e.key === 'ArrowLeft') prevImage();
   });
 });
   </script>
