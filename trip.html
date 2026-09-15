@@ -682,6 +682,7 @@ window.onerror = function(msg, url, line, col) {
     // ============================================
     function renderItinerary(trip) {
       const container = document.getElementById('itinerary-list');
+if (!container) return;
       const isAr = isRTL();
 
       // Sample itinerary items — will be replaced with real data later
@@ -793,6 +794,7 @@ let galleryImages = [];
 let currentImageIndex = 0;
 
 function renderGallery(trip) {
+if (!document.getElementById('gallery-albums')) return;
   const albums = [
     {
       id: 'hotel',
