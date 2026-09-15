@@ -467,6 +467,15 @@
 
   <footer id="app-footer"></footer>
 
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav lightbox-prev" id="lb-prev">‹</button>
+  <button class="lightbox-nav lightbox-next" id="lb-next">›</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lightbox-caption" id="lb-caption"></div>
+</div>
+
   <script src="assets/js/config.js"></script>
   <script src="assets/js/data.js"></script>
   <script src="assets/js/i18n.js"></script>
@@ -738,6 +747,106 @@
         showToast('سيتم تفعيل المقارنة قريبًا', 'info');
       });
     }
+
+// ============================================
+// PHOTO GALLERY
+// ============================================
+let galleryImages = [];
+let currentImageIndex = 0;
+
+function renderGallery(trip) {
+  const tripPhotos = [
+    { url: 'https://picsum.photos/seed/hotel1/800/800', label: 'الفندق' },
+    { url: 'https://picsum.photos/seed/room1/800/800', label: 'الغرفة' },
+    { url: 'https://picsum.photos/seed/food1/800/800', label: 'الوجبات' },
+    { url: 'https://picsum.photos/seed/transport1/800/800', label: 'المواصلات' },
+    { url: 'https://picsum.photos/seed/group1/800/800', label: 'الرحلة' },
+    { url: 'https://picsum.photos/seed/view1/800/800', label: 'الإطلالة' },
+  ];
+
+  const landmarksByType = {
+    umrah: [
+      { url: 'https://picsum.photos/seed/kaaba/800/800', label: 'الكعبة المشرفة' },
+      { url: 'https://picsum.photos/seed/masjid/800/800', label: 'المسجد النبوي' },
+      { url: 'https://picsum.photos/seed/makkah/800/800', label: 'مكة المكرمة' },
+      { url: 'https://picsum.photos/seed/madinah/800/800', label: 'المدينة المنورة' },
+    ],
+    hajj: [
+      { url: 'https://picsum.photos/seed/mina/800/800', label: 'منى' },
+      { url: 'https://picsum.photos/seed/arafat/800/800', label: 'عرفة' },
+      { url: 'https://picsum.photos/seed/kaaba2/800/800', label: 'الكعبة' },
+    ],
+    leisure: [
+      { url: 'https://picsum.photos/seed/beach1/800/800', label: 'الشاطئ' },
+      { url: 'https://picsum.photos/seed/city1/800/800', label: 'المدينة' },
+      { url: 'https://picsum.photos/seed/park1/800/800', label: 'الحديقة' },
+    ],
+    adventure: [
+      { url: 'https://picsum.photos/seed/mountain/800/800', label: 'الجبل' },
+      { url: 'https://picsum.photos/seed/valley/800/800', label: 'الوادي' },
+      { url: 'https://picsum.photos/seed/river/800/800', label: 'النهر' },
+    ],
+  };
+
+  const landmarks = landmarksByType[trip.trip_type] || [
+    { url: 'https://picsum.photos/seed/landmark1/800/800', label: 'معلم سياحي' },
+    { url: 'https://picsum.photos/seed/landmark2/800/800', label: 'معلم تاريخي' },
+    { url: 'https://picsum.photos/seed/landmark3/800/800', label: 'ساحة' },
+    { url: 'https://picsum.photos/seed/landmark4/800/800', label: 'متحف' },
+  ];
+
+  galleryImages = [
+    ...tripPhotos.map(p => ({ url: p.url.replace('800/800', '1600/1200'), label: p.label })),
+    ...landmarks.map(p => ({ url: p.url.replace('800/800', '1600/1200'), label: p.label })),
+  ];
+
+  document.getElementById('trip-photos').innerHTML = tripPhotos.map((p, i) => `
+    <div class="photo-item" onclick="openLightbox(${i})">
+      <img src="${p.url}" alt="${p.label}" loading="lazy">
+      <div class="photo-item-label">${p.label}</div>
+    </div>
+  `).join('');
+
+  const offset = tripPhotos.length;
+  document.getElementById('trip-landmarks').innerHTML = landmarks.map((p, i) => `
+    <div class="photo-item" onclick="openLightbox(${offset + i})">
+      <img src="${p.url}" alt="${p.label}" loading="lazy">
+      <div class="photo-item-label">${p.label}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================
+// LIGHTBOX
+// ============================================
+function openLightbox(index) {
+  currentImageIndex = index;
+  updateLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function updateLightbox() {
+  const img = galleryImages[currentImageIndex];
+  if (!img) return;
+  document.getElementById('lb-img').src = img.url;
+  document.getElementById('lb-caption').textContent = img.label || '';
+}
+
+function nextImage() {
+  currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+  updateLightbox();
+}
+
+function prevImage() {
+  currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+  updateLightbox();
+}
   </script>
 
 </body>
