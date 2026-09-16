@@ -16,9 +16,10 @@ function formatPrice(amount, currencyCode) {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });
-  return `${formatted} ${info.symbol}`;
+  const isAr = typeof isRTL === 'function' ? isRTL() : true;
+  const code = isAr ? (info.codeAr || info.symbol) : currency;
+  return `${formatted} ${code}`;
 }
-
 /**
  * Format date
  */
@@ -217,15 +218,64 @@ function renderHeader(containerId = 'app-header') {
         </div>
       </div>
 
-      <!-- Mobile menu -->
-      <div id="mobile-menu" class="tarhal-mobile-menu" style="display:none;">
-        <a href="index.html">${t('nav.home')}</a>
-        <a href="trips.html">${t('nav.trips')}</a>
-        <a href="my-trips.html">${t('nav.myTrips')}</a>
-        <a href="dashboard.html">${t('nav.dashboard')}</a>
-        <a href="login.html">${t('nav.login')}</a>
-        <a href="register.html">${t('nav.register')}</a>
-      </div>
+<!-- Mobile menu -->
+<div id="mobile-menu" class="tarhal-mobile-menu" style="display:none;">
+  <a href="index.html">${t('nav.home')}</a>
+  <a href="trips.html">${t('nav.trips')}</a>
+  <a href="my-trips.html">${t('nav.myTrips')}</a>
+  <a href="dashboard.html">${t('nav.dashboard')}</a>
+  <a href="login.html">${t('nav.login')}</a>
+  <a href="register.html">${t('nav.register')}</a>
+
+  <div class="menu-settings">
+    <div class="menu-settings-title">⚙️ ${isAr ? 'الإعدادات' : 'Settings'}</div>
+
+    <div class="menu-setting">
+      <label>${isAr ? 'العملة' : 'Currency'}</label>
+      <select id="menu-currency" class="menu-select">
+        <option value="EGP">🇪🇬 جنيه مصري (ج.م)</option>
+        <option value="SAR">🇸🇦 ريال سعودي (ر.س)</option>
+        <option value="AED">🇦🇪 درهم إماراتي (د.إ)</option>
+        <option value="KWD">🇰🇼 دينار كويتي (د.ك)</option>
+        <option value="QAR">🇶🇦 ريال قطري (ر.ق)</option>
+        <option value="USD">🇺🇸 دولار أمريكي ($)</option>
+        <option value="EUR">🇪🇺 يورو (€)</option>
+        <option value="GBP">🇬🇧 جنيه إسترليني (£)</option>
+        <option value="TRY">🇹🇷 ليرة تركية (ل.ت)</option>
+      </select>
+    </div>
+
+    <div class="menu-setting">
+      <label>${isAr ? 'الموقع' : 'Location'}</label>
+      <select id="menu-country" class="menu-select">
+        <option value="EG">🇪🇬 مصر</option>
+        <option value="SA">🇸🇦 السعودية</option>
+        <option value="AE">🇦🇪 الإمارات</option>
+        <option value="KW">🇰🇼 الكويت</option>
+        <option value="QA">🇶🇦 قطر</option>
+        <option value="BH">🇧🇭 البحرين</option>
+        <option value="OM">🇴🇲 عُمان</option>
+        <option value="JO">🇯🇴 الأردن</option>
+        <option value="LB">🇱🇧 لبنان</option>
+        <option value="IQ">🇮🇶 العراق</option>
+        <option value="MA">🇲🇦 المغرب</option>
+        <option value="DZ">🇩🇿 الجزائر</option>
+        <option value="TN">🇹🇳 تونس</option>
+        <option value="LY">🇱🇾 ليبيا</option>
+        <option value="SD">🇸🇩 السودان</option>
+        <option value="TR">🇹🇷 تركيا</option>
+        <option value="GB">🇬🇧 بريطانيا</option>
+        <option value="FR">🇫🇷 فرنسا</option>
+        <option value="DE">🇩🇪 ألمانيا</option>
+        <option value="US">🇺🇸 أمريكا</option>
+      </select>
+    </div>
+
+    <button id="menu-locate-btn" class="menu-locate-btn">
+      📍 ${isAr ? 'اكشف موقعي تلقائيًا' : 'Detect my location'}
+    </button>
+  </div>
+</div>
     </header>
   `;
 
