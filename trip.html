@@ -9,11 +9,30 @@
   <link rel="stylesheet" href="assets/css/style.css">
 
   <style>
+    /* ===== BASE RESET ===== */
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    img, svg {
+      max-width: 100%;
+    }
+
+    /* ===== LOADING / NOT FOUND ===== */
     #trip-loading, #trip-notfound {
       text-align: center;
       padding: 80px 20px;
       color: var(--text-gray);
     }
+
+    /* ===== COVER ===== */
     .trip-cover {
       width: 100%;
       aspect-ratio: 16/9;
@@ -31,8 +50,12 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
+
+    /* ===== CONTAINER ===== */
     .trip-container {
+      width: 100%;
       max-width: 1100px;
       margin: 0 auto;
       padding: 0 16px;
@@ -40,12 +63,15 @@
       position: relative;
       z-index: 2;
     }
+
+    /* ===== HEADER CARD ===== */
     .trip-header-card {
       background: white;
       border-radius: var(--radius-lg);
       padding: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       margin-bottom: 20px;
+      width: 100%;
     }
     .trip-title {
       font-size: 24px;
@@ -86,12 +112,15 @@
       background: rgba(22,163,74,0.1);
       color: var(--success);
     }
+
+    /* ===== PRICE CARD ===== */
     .trip-price-card {
       background: white;
       border: 2px solid var(--primary);
       border-radius: var(--radius-lg);
       padding: 20px;
       margin-bottom: 20px;
+      width: 100%;
     }
     .trip-price-label {
       font-size: 13px;
@@ -115,33 +144,44 @@
       font-weight: 600;
       margin-bottom: 16px;
     }
+
+    /* ===== TABS (5 tabs fit) ===== */
     .tabs-nav {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
       border-bottom: 2px solid var(--border);
       margin-bottom: 20px;
-      overflow-x: auto;
-      gap: 4px;
+      width: 100%;
+      overflow: hidden;
     }
     .tabs-nav button {
-      padding: 12px 18px;
-      font-size: 14px;
+      padding: 12px 2px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--text-gray);
-      white-space: nowrap;
+      white-space: normal;
+      text-align: center;
       border-bottom: 3px solid transparent;
       margin-bottom: -2px;
       transition: all 0.2s;
       background: none;
       font-family: inherit;
       cursor: pointer;
+      line-height: 1.2;
+      min-width: 0;
+      word-break: break-word;
     }
     .tabs-nav button.active {
       color: var(--primary);
       border-bottom-color: var(--primary);
     }
+
+    /* ===== TAB CONTENT ===== */
     .tab-content {
       display: none;
       animation: fadeIn 0.3s ease;
+      width: 100%;
     }
     .tab-content.active {
       display: block;
@@ -152,6 +192,7 @@
       border-radius: var(--radius-lg);
       padding: 20px;
       margin-bottom: 16px;
+      width: 100%;
     }
     .info-card-title {
       font-size: 16px;
@@ -168,6 +209,8 @@
       color: var(--text-medium);
       white-space: pre-wrap;
     }
+
+    /* ===== CHECK LIST ===== */
     .check-list {
       list-style: none;
       padding: 0;
@@ -186,229 +229,237 @@
       flex-shrink: 0;
       margin-top: 3px;
     }
+
+    /* ===== ANIMATION ===== */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    /* Disabled state for the booking / compare buttons */
+
+    /* ===== DISABLED BUTTON ===== */
     .tarhal-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       pointer-events: none;
     }
-/* ===== PHOTO GALLERY ===== */
-.photo-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  margin-top: 4px;
-}
-@media (min-width: 640px) {
-  .photo-grid { grid-template-columns: repeat(3, 1fr); }
-}
-.photo-item {
-  aspect-ratio: 1;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  position: relative;
-  background: var(--bg-gray);
-  transition: transform 0.2s;
-}
-.photo-item:hover {
-  transform: scale(1.02);
-}
-.photo-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.photo-item-label {
-  position: absolute;
-  bottom: 0;
-  inset-inline: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-  color: white;
-  padding: 8px 10px 6px;
-  font-size: 12px;
-  font-weight: 600;
-}
-.lightbox {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.95);
-  z-index: 9999;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.lightbox.open { display: flex; }
-.lightbox img {
-  max-width: 100%;
-  max-height: 85vh;
-  border-radius: 12px;
-  object-fit: contain;
-}
-.lightbox-close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  left: auto;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  cursor: pointer;
-  border: none;
-}
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  cursor: pointer;
-  border: none;
-}
-..lightbox-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 60px;
-  height: 60px;
-  font-size: 40px;
-  font-weight: bold;
-  border-radius: 50%;
-  background: white;
-  color: #DC2626;
-  border: 3px solid #DC2626;
-  box-shadow: 0 6px 30px rgba(0,0,0,0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 100;
-}
-.lightbox-prev {
-  left: 16px;
-  right: auto;
-}
-.lightbox-next {
-  right: 16px;
-  left: auto;
-}
-.lightbox-caption {
-  position: absolute;
-  bottom: 30px;
-  inset-inline: 30px;
-  color: white;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 600;
-}
-/* ===== ALBUMS ===== */
-.album {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  margin-bottom: 12px;
-}
-.album-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-.album-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-dark);
-}
-.album-title-icon {
-  font-size: 22px;
-  line-height: 1;
-}
-.album-count {
-  font-size: 12px;
-  color: var(--text-gray);
-  background: var(--bg-gray);
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-weight: 600;
-}
-.album-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-@media (min-width: 640px) {
-  .album-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-.album-photo {
-  aspect-ratio: 1;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  position: relative;
-  background: var(--bg-gray);
-  transition: transform 0.2s;
-}
-.album-photo:active {
-  transform: scale(0.97);
-}
-.album-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.album-photo-label {
-  position: absolute;
-  bottom: 0;
-  inset-inline: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
-  color: white;
-  padding: 14px 8px 6px;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.3;
-  text-align: center;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+
+    /* ===== ALBUMS ===== */
+    .album {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 12px;
+      width: 100%;
+    }
+    .album-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .album-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .album-title-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+    .album-count {
+      font-size: 12px;
+      color: var(--text-gray);
+      background: var(--bg-gray);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .album-photo {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      background: var(--bg-gray);
+      transition: transform 0.2s;
+    }
+    .album-photo:active {
+      transform: scale(0.97);
+    }
+    .album-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .album-photo-label {
+      position: absolute;
+      bottom: 0;
+      inset-inline: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+      color: white;
+      padding: 14px 8px 6px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-align: center;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ===== LIGHTBOX (Swipe-friendly) ===== */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      touch-action: pan-y;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100vw;
+      max-height: 85vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+      display: block;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      left: auto;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: white;
+      color: #DC2626;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+      z-index: 10;
+    }
+    .lightbox-caption {
+      position: absolute;
+      bottom: 30px;
+      left: 20px;
+      right: 20px;
+      color: white;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+      pointer-events: none;
+    }
+    .lightbox-hint {
+      position: absolute;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.7);
+      font-size: 12px;
+      text-align: center;
+      pointer-events: none;
+      animation: hintFade 3s ease-in-out infinite;
+    }
+    @keyframes hintFade {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (min-width: 640px) {
+      .album-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .tabs-nav button {
+        font-size: 14px;
+        padding: 14px 8px;
+      }
+    }
+
+    /* ===== MOBILE FULL WIDTH ===== */
+    @media (max-width: 640px) {
+      .trip-container {
+        padding: 0;
+        margin-top: -40px;
+      }
+      .trip-header-card {
+        border-radius: 16px 16px 0 0;
+        margin: 0 0 6px 0;
+        padding: 16px;
+        box-shadow: none;
+      }
+      .trip-price-card {
+        border-radius: 0;
+        border-inline: none;
+        border-top: none;
+        margin: 0 0 6px 0;
+        padding: 16px;
+      }
+      .tabs-nav {
+        margin-bottom: 0;
+        background: white;
+      }
+      .tab-content {
+        padding: 8px;
+      }
+      .info-card {
+        border-radius: 0;
+        border-inline: none;
+        border-top: none;
+        padding: 16px;
+        margin-bottom: 6px;
+      }
+      .album {
+        border-radius: 0;
+        border-inline: none;
+        border-top: none;
+        margin-bottom: 6px;
+      }
+    }
   </style>
 </head>
-<body>
-<div id="error-box" style="display:none; position:fixed; top:0; left:0; right:0; background:#DC2626; color:white; padding:12px; z-index:99999; font-size:13px; direction:ltr; text-align:left; font-family:monospace; max-height:40vh; overflow:auto;"></div>
-<script>
-window.onerror = function(msg, url, line, col) {
-  var box = document.getElementById('error-box');
-  if (box) {
-    box.style.display = 'block';
-    box.textContent += 'ERROR: ' + msg + ' | line ' + line + ':' + col + '\n';
-  }
-};
-</script>
+
+  <div id="error-box" style="display:none; position:fixed; top:0; left:0; right:0; background:#DC2626; color:white; padding:12px; z-index:99999; font-size:13px; direction:ltr; text-align:left; font-family:monospace; max-height:40vh; overflow:auto;"></div>
+  <script>
+    window.onerror = function(msg, url, line, col) {
+      var box = document.getElementById('error-box');
+      if (box) {
+        box.style.display = 'block';
+        box.textContent += 'ERROR: ' + msg + ' | line ' + line + ':' + col + '\n';
+      }
+    };
+  </script>
+
   <header id="app-header"></header>
 
   <div id="trip-loading">
@@ -466,13 +517,14 @@ window.onerror = function(msg, url, line, col) {
       </div>
 
       <!-- ===== TABS ===== -->
-<div class="tabs-nav">
-  <button class="tab-btn active" data-tab="overview">نظرة عامة</button>
-  <button class="tab-btn" data-tab="itinerary">خط سير الرحلة</button>
-  <button class="tab-btn" data-tab="included">المشمول</button>
-  <button class="tab-btn" data-tab="gallery">الصور</button>
-  <button class="tab-btn" data-tab="requirements">المستندات المطلوبة</button>
-</div>
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="overview">نظرة عامة</button>
+        <button class="tab-btn" data-tab="itinerary">خط السير</button>
+        <button class="tab-btn" data-tab="included">المشمول</button>
+        <button class="tab-btn" data-tab="gallery">الصور</button>
+        <button class="tab-btn" data-tab="requirements">المستندات</button>
+      </div>
+
       <!-- ===== TAB: OVERVIEW ===== -->
       <div class="tab-content active" data-tab-content="overview">
         <div class="info-card">
@@ -528,9 +580,9 @@ window.onerror = function(msg, url, line, col) {
       </div>
 
       <!-- ===== TAB: GALLERY ===== -->
-<div class="tab-content" data-tab-content="gallery">
-  <div id="gallery-albums"></div>
-</div>
+      <div class="tab-content" data-tab-content="gallery">
+        <div id="gallery-albums"></div>
+      </div>
 
       <!-- ===== TAB: REQUIREMENTS ===== -->
       <div class="tab-content" data-tab-content="requirements">
@@ -561,15 +613,8 @@ window.onerror = function(msg, url, line, col) {
 
   <footer id="app-footer"></footer>
 
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-  <button class="lightbox-nav lightbox-prev" id="lb-prev">‹</button>
-  <button class="lightbox-nav lightbox-next" id="lb-next">›</button>
-  <img id="lb-img" src="" alt="">
-  <div class="lightbox-caption" id="lb-caption"></div>
-</div>
 
+  <!-- ===== SCRIPTS ===== -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/data.js"></script>
   <script src="assets/js/i18n.js"></script>
@@ -582,8 +627,7 @@ window.onerror = function(msg, url, line, col) {
     let currentTrip = null;
 
     // ============================================
-    // SMALL HELPER — escape text before it goes into innerHTML
-    // (use this for any string that isn't hardcoded in this file)
+    // HELPER — escape text before innerHTML
     // ============================================
     function escapeHtml(str) {
       const div = document.createElement('div');
@@ -597,6 +641,9 @@ window.onerror = function(msg, url, line, col) {
     document.addEventListener('DOMContentLoaded', () => {
       initApp();
       loadTrip();
+      ensureLightbox();
+      setupSwipe();
+      setupLightboxEvents();
     });
 
     // ============================================
@@ -626,18 +673,15 @@ window.onerror = function(msg, url, line, col) {
     function renderTrip(trip) {
       const isAr = isRTL();
 
-      // Keep the page direction/language in sync with the active locale
       document.documentElement.dir = isAr ? 'rtl' : 'ltr';
       document.documentElement.lang = isAr ? 'ar' : 'en';
 
-      // Hide loading, show content
       document.getElementById('trip-loading').style.display = 'none';
       document.getElementById('trip-content').style.display = 'block';
 
-      // Page title
       document.title = (isAr ? trip.title_ar : trip.title_en) + ' — ترحال';
 
-      // Cover (built with DOM APIs so a malicious cover_url can't break out of the tag)
+      // Cover
       const cover = document.getElementById('trip-cover');
       cover.innerHTML = '';
       if (trip.cover_url) {
@@ -652,18 +696,20 @@ window.onerror = function(msg, url, line, col) {
       // Type badge
       document.getElementById('trip-type-badge').textContent = t('tripTypes.' + trip.trip_type);
 
-      // Company badge (mock — first trip only for demo)
+      // Company badge
       const companyBadge = document.getElementById('trip-company-badge');
       if (trip.id === '1' || trip.id === '4') {
-        companyBadge.innerHTML = `<span class="trip-badge trip-badge-verified">✓ شركة موثقة</span>`;
+        companyBadge.innerHTML = '<span class="trip-badge trip-badge-verified">✓ شركة موثقة</span>';
       }
 
       // Title
       document.getElementById('trip-title').textContent = isAr ? trip.title_ar : trip.title_en;
 
-      // Meta
+      // Meta — FIX: use .ar / .en (not .nameAr / .nameEn)
       const destCountry = getCountryByCode(trip.destination_country);
-      const destName = destCountry ? (isAr ? destCountry.nameAr : destCountry.nameEn) : trip.destination_country;
+      const destName = destCountry
+        ? (isAr ? destCountry.ar : destCountry.en)
+        : trip.destination_country;
 
       document.getElementById('trip-meta').innerHTML = `
         <div class="trip-meta-item">
@@ -717,10 +763,8 @@ window.onerror = function(msg, url, line, col) {
         `;
       }
 
-      // Itinerary (mock timeline)
       renderItinerary(trip);
 
-      // Included / Excluded
       renderList('included-list', [
         'تذاكر الطيران ذهاب وعودة',
         'الإقامة في الفندق المذكور',
@@ -736,7 +780,6 @@ window.onerror = function(msg, url, line, col) {
         'الوجبات غير المذكورة',
       ], 'x');
 
-      // Requirements
       renderList('requirements-list', [
         'جواز سفر ساري لمدة 6 أشهر على الأقل',
         'صورة شخصية حديثة',
@@ -744,10 +787,7 @@ window.onerror = function(msg, url, line, col) {
         'شهادة التطعيم (إن وجدت)',
       ], 'doc');
 
-      // Setup tabs
       setupTabs();
-
-      // Setup buttons
       renderGallery(trip);
       setupButtons(trip);
     }
@@ -757,10 +797,8 @@ window.onerror = function(msg, url, line, col) {
     // ============================================
     function renderItinerary(trip) {
       const container = document.getElementById('itinerary-list');
-if (!container) return;
-      const isAr = isRTL();
+      if (!container) return;
 
-      // Sample itinerary items — will be replaced with real data later
       const items = [
         { day: 1, type: 'flight', icon: '✈️', title: 'الإقلاع من مطار القاهرة', time: '08:00', note: 'رحلة مباشرة' },
         { day: 1, type: 'hotel', icon: '🏨', title: 'الوصول وتسجيل الدخول للفندق', time: '14:00', note: 'فندق 5 نجوم' },
@@ -844,243 +882,250 @@ if (!container) return;
     // SETUP BUTTONS
     // ============================================
     function setupButtons(trip) {
-      // Book button
-      document.getElementById('book-btn').addEventListener('click', () => {
-        const user = getCurrentUser();
-        if (!user) {
-          showToast('من فضلك سجّل دخولك أولاً', 'error');
-          setTimeout(() => {
-            window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
-          }, 1200);
-          return;
-        }
-        // Will implement booking flow later
-        showToast('سيتم تفعيل الحجز قريبًا', 'info');
-      });
+      const bookBtn = document.getElementById('book-btn');
+      if (bookBtn) {
+        bookBtn.addEventListener('click', () => {
+          const user = getCurrentUser();
+          if (!user) {
+            showToast('من فضلك سجّل دخولك أولاً', 'error');
+            setTimeout(() => {
+              window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+            }, 1200);
+            return;
+          }
+          showToast('سيتم تفعيل الحجز قريبًا', 'info');
+        });
+      }
 
-      // Compare button
-      document.getElementById('compare-btn').addEventListener('click', () => {
-        showToast('سيتم تفعيل المقارنة قريبًا', 'info');
-      });
+      const compareBtn = document.getElementById('compare-btn');
+      if (compareBtn) {
+        compareBtn.addEventListener('click', () => {
+          showToast('سيتم تفعيل المقارنة قريبًا', 'info');
+        });
+      }
     }
 
-// ============================================
-// PHOTO GALLERY
-// ============================================
-let galleryImages = [];
-let currentImageIndex = 0;
+    // ============================================
+    // PHOTO GALLERY
+    // ============================================
+    function renderGallery(trip) {
+      if (!document.getElementById('gallery-albums')) return;
 
-function renderGallery(trip) {
-if (!document.getElementById('gallery-albums')) return;
-  const albums = [
-    {
-      id: 'hotel',
-      icon: '🏨',
-      title: 'الفندق',
-      photos: [
-        { url: 'https://picsum.photos/seed/hotel-ext/800/800', label: 'من الخارج' },
-        { url: 'https://picsum.photos/seed/hotel-lobby/800/800', label: 'اللوبي' },
-        { url: 'https://picsum.photos/seed/hotel-room/800/800', label: 'الغرفة' },
-        { url: 'https://picsum.photos/seed/hotel-bath/800/800', label: 'الحمام' },
-      ],
-    },
-    {
-      id: 'flight',
-      icon: '✈️',
-      title: 'الطيران',
-      photos: [
-        { url: 'https://picsum.photos/seed/flight-1/800/800', label: 'الطائرة' },
-        { url: 'https://picsum.photos/seed/flight-2/800/800', label: 'المقصورة' },
-      ],
-    },
-    {
-      id: 'food',
-      icon: '🍽️',
-      title: 'الوجبات',
-      photos: [
-        { url: 'https://picsum.photos/seed/food-1/800/800', label: 'الإفطار' },
-        { url: 'https://picsum.photos/seed/food-2/800/800', label: 'الغداء' },
-        { url: 'https://picsum.photos/seed/food-3/800/800', label: 'العشاء' },
-      ],
-    },
-    {
-      id: 'transport',
-      icon: '🚌',
-      title: 'المواصلات',
-      photos: [
-        { url: 'https://picsum.photos/seed/bus-1/800/800', label: 'الباص' },
-        { url: 'https://picsum.photos/seed/car-1/800/800', label: 'السيارة' },
-      ],
-    },
-  ];
+      const albums = [
+        {
+          id: 'hotel', icon: '🏨', title: 'الفندق',
+          photos: [
+            { url: 'https://picsum.photos/seed/hotel-ext/800/800', label: 'من الخارج' },
+            { url: 'https://picsum.photos/seed/hotel-lobby/800/800', label: 'اللوبي' },
+            { url: 'https://picsum.photos/seed/hotel-room/800/800', label: 'الغرفة' },
+            { url: 'https://picsum.photos/seed/hotel-bath/800/800', label: 'الحمام' },
+          ],
+        },
+        {
+          id: 'flight', icon: '✈️', title: 'الطيران',
+          photos: [
+            { url: 'https://picsum.photos/seed/flight-1/800/800', label: 'الطائرة' },
+            { url: 'https://picsum.photos/seed/flight-2/800/800', label: 'المقصورة' },
+          ],
+        },
+        {
+          id: 'food', icon: '🍽️', title: 'الوجبات',
+          photos: [
+            { url: 'https://picsum.photos/seed/food-1/800/800', label: 'الإفطار' },
+            { url: 'https://picsum.photos/seed/food-2/800/800', label: 'الغداء' },
+            { url: 'https://picsum.photos/seed/food-3/800/800', label: 'العشاء' },
+          ],
+        },
+        {
+          id: 'transport', icon: '🚌', title: 'المواصلات',
+          photos: [
+            { url: 'https://picsum.photos/seed/bus-1/800/800', label: 'الباص' },
+            { url: 'https://picsum.photos/seed/car-1/800/800', label: 'السيارة' },
+          ],
+        },
+      ];
 
-  // Landmarks album (varies by trip type)
-  const landmarksByType = {
-    umrah: [
-      { url: 'https://picsum.photos/seed/kaaba/800/800', label: 'الكعبة المشرفة' },
-      { url: 'https://picsum.photos/seed/nabawi/800/800', label: 'المسجد النبوي' },
-      { url: 'https://picsum.photos/seed/makkah/800/800', label: 'مكة المكرمة' },
-      { url: 'https://picsum.photos/seed/madinah/800/800', label: 'المدينة المنورة' },
-      { url: 'https://picsum.photos/seed/haram/800/800', label: 'الحرم' },
-    ],
-    hajj: [
-      { url: 'https://picsum.photos/seed/mina/800/800', label: 'منى' },
-      { url: 'https://picsum.photos/seed/arafat/800/800', label: 'عرفة' },
-      { url: 'https://picsum.photos/seed/muzdalifah/800/800', label: 'مزدلفة' },
-      { url: 'https://picsum.photos/seed/kaaba2/800/800', label: 'الكعبة' },
-    ],
-    leisure: [
-      { url: 'https://picsum.photos/seed/beach1/800/800', label: 'الشاطئ' },
-      { url: 'https://picsum.photos/seed/city1/800/800', label: 'المدينة' },
-      { url: 'https://picsum.photos/seed/park1/800/800', label: 'الحديقة' },
-    ],
-    adventure: [
-      { url: 'https://picsum.photos/seed/mountain/800/800', label: 'الجبل' },
-      { url: 'https://picsum.photos/seed/valley/800/800', label: 'الوادي' },
-      { url: 'https://picsum.photos/seed/river/800/800', label: 'النهر' },
-    ],
-  };
+      const landmarksByType = {
+        umrah: [
+          { url: 'https://picsum.photos/seed/kaaba/800/800', label: 'الكعبة المشرفة' },
+          { url: 'https://picsum.photos/seed/nabawi/800/800', label: 'المسجد النبوي' },
+          { url: 'https://picsum.photos/seed/makkah/800/800', label: 'مكة المكرمة' },
+          { url: 'https://picsum.photos/seed/madinah/800/800', label: 'المدينة المنورة' },
+          { url: 'https://picsum.photos/seed/haram/800/800', label: 'الحرم' },
+        ],
+        hajj: [
+          { url: 'https://picsum.photos/seed/mina/800/800', label: 'منى' },
+          { url: 'https://picsum.photos/seed/arafat/800/800', label: 'عرفة' },
+          { url: 'https://picsum.photos/seed/muzdalifah/800/800', label: 'مزدلفة' },
+          { url: 'https://picsum.photos/seed/kaaba2/800/800', label: 'الكعبة' },
+        ],
+        leisure: [
+          { url: 'https://picsum.photos/seed/beach1/800/800', label: 'الشاطئ' },
+          { url: 'https://picsum.photos/seed/city1/800/800', label: 'المدينة' },
+          { url: 'https://picsum.photos/seed/park1/800/800', label: 'الحديقة' },
+        ],
+        adventure: [
+          { url: 'https://picsum.photos/seed/mountain/800/800', label: 'الجبل' },
+          { url: 'https://picsum.photos/seed/valley/800/800', label: 'الوادي' },
+          { url: 'https://picsum.photos/seed/river/800/800', label: 'النهر' },
+        ],
+      };
 
-  const landmarkPhotos = landmarksByType[trip.trip_type] || [
-    { url: 'https://picsum.photos/seed/lm1/800/800', label: 'معلم سياحي' },
-    { url: 'https://picsum.photos/seed/lm2/800/800', label: 'معلم تاريخي' },
-    { url: 'https://picsum.photos/seed/lm3/800/800', label: 'ساحة' },
-  ];
+      const landmarkPhotos = landmarksByType[trip.trip_type] || [
+        { url: 'https://picsum.photos/seed/lm1/800/800', label: 'معلم سياحي' },
+        { url: 'https://picsum.photos/seed/lm2/800/800', label: 'معلم تاريخي' },
+        { url: 'https://picsum.photos/seed/lm3/800/800', label: 'ساحة' },
+      ];
 
-  albums.push({
-    id: 'landmarks',
-    icon: '🕌',
-    title: 'المزارات والأماكن',
-    photos: landmarkPhotos,
-  });
+      albums.push({
+        id: 'landmarks', icon: '🕌', title: 'المزارات والأماكن',
+        photos: landmarkPhotos,
+      });
 
-  // Save to global for lightbox
-  window._galleryAlbums = albums;
+      window._galleryAlbums = albums;
 
-  // Render
-  const container = document.getElementById('gallery-albums');
-  container.innerHTML = albums.map((album, ai) => `
-    <div class="album">
-      <div class="album-header">
-        <div class="album-title">
-          <span class="album-title-icon">${album.icon}</span>
-          ${album.title}
-        </div>
-        <span class="album-count">${album.photos.length} صور</span>
-      </div>
-      <div class="album-grid">
-        ${album.photos.map((p, pi) => `
-          <div class="album-photo" onclick="openLightbox(${ai}, ${pi})">
-            <img src="${p.url}" alt="${p.label}" loading="lazy">
-            <div class="album-photo-label">${p.label}</div>
+      const container = document.getElementById('gallery-albums');
+      container.innerHTML = albums.map((album, ai) => `
+        <div class="album">
+          <div class="album-header">
+            <div class="album-title">
+              <span class="album-title-icon">${album.icon}</span>
+              ${album.title}
+            </div>
+            <span class="album-count">${album.photos.length} صور</span>
           </div>
-        `).join('')}
-      </div>
-    </div>
-  `).join('');
-}
+          <div class="album-grid">
+            ${album.photos.map((p, pi) => `
+              <div class="album-photo" onclick="openLightbox(${ai}, ${pi})">
+                <img src="${p.url}" alt="${p.label}" loading="lazy">
+                <div class="album-photo-label">${p.label}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
 
-// ============================================
-// LIGHTBOX — Album-aware
-// ============================================
-let currentAlbumIndex = 0;
-let currentPhotoIndex = 0;
+    // ============================================
+    // LIGHTBOX — Album-aware + Swipe
+    // ============================================
+    let currentAlbumIndex = 0;
+    let currentPhotoIndex = 0;
 
-function openLightbox(albumIndex, photoIndex) {
-  const lb = document.getElementById('lightbox');
-  if (!lb) return;
-  currentAlbumIndex = albumIndex;
-  currentPhotoIndex = photoIndex;
-  updateLightbox();
-  lb.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
+    function openLightbox(albumIndex, photoIndex) {
+      const lb = document.getElementById('lightbox');
+      if (!lb) return;
+      currentAlbumIndex = albumIndex;
+      currentPhotoIndex = photoIndex;
+      updateLightbox();
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
 
-function closeLightbox() {
-  const lb = document.getElementById('lightbox');
-  if (lb) lb.classList.remove('open');
-  document.body.style.overflow = '';
-}
+    function closeLightbox() {
+      const lb = document.getElementById('lightbox');
+      if (lb) lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
 
-function updateLightbox() {
-  const albums = window._galleryAlbums || [];
-  const album = albums[currentAlbumIndex];
-  if (!album) return;
+    function updateLightbox() {
+      const albums = window._galleryAlbums || [];
+      const album = albums[currentAlbumIndex];
+      if (!album) return;
 
-  const photo = album.photos[currentPhotoIndex];
-  if (!photo) return;
+      const photo = album.photos[currentPhotoIndex];
+      if (!photo) return;
 
-  // Use bigger image for lightbox
-  const bigUrl = photo.url.replace('800/800', '1600/1200');
-  document.getElementById('lb-img').src = bigUrl;
-  document.getElementById('lb-caption').textContent =
-    `${album.icon} ${album.title} — ${photo.label}`;
+      const bigUrl = photo.url.replace('800/800', '1600/1200');
+      document.getElementById('lb-img').src = bigUrl;
 
-  // Hide nav arrows if only 1 photo in album
-  const hasMultiple = album.photos.length > 1;
-  document.getElementById('lb-prev').style.display = hasMultiple ? 'flex' : 'none';
-  document.getElementById('lb-next').style.display = hasMultiple ? 'flex' : 'none';
-}
+      const total = album.photos.length;
+      const counter = total > 1 ? ` (${currentPhotoIndex + 1}/${total})` : '';
+      document.getElementById('lb-caption').textContent =
+        `${album.icon} ${album.title} — ${photo.label}${counter}`;
+    }
 
-function nextImage() {
-  const albums = window._galleryAlbums || [];
-  const album = albums[currentAlbumIndex];
-  if (!album) return;
-  currentPhotoIndex = (currentPhotoIndex + 1) % album.photos.length;
-  updateLightbox();
-}
+    function nextImage() {
+      const albums = window._galleryAlbums || [];
+      const album = albums[currentAlbumIndex];
+      if (!album || album.photos.length < 2) return;
+      currentPhotoIndex = (currentPhotoIndex + 1) % album.photos.length;
+      updateLightbox();
+    }
 
-function prevImage() {
-  const albums = window._galleryAlbums || [];
-  const album = albums[currentAlbumIndex];
-  if (!album) return;
-  currentPhotoIndex = (currentPhotoIndex - 1 + album.photos.length) % album.photos.length;
-  updateLightbox();
-}
+    function prevImage() {
+      const albums = window._galleryAlbums || [];
+      const album = albums[currentAlbumIndex];
+      if (!album || album.photos.length < 2) return;
+      currentPhotoIndex = (currentPhotoIndex - 1 + album.photos.length) % album.photos.length;
+      updateLightbox();
+    }
 
-// ============================================
-// CREATE LIGHTBOX DYNAMICALLY
-// ============================================
-function ensureLightbox() {
-  if (document.getElementById('lightbox')) return;
+    // ============================================
+    // CREATE LIGHTBOX DYNAMICALLY
+    // ============================================
+    function ensureLightbox() {
+      if (document.getElementById('lightbox')) return;
 
-  const lb = document.createElement('div');
-  lb.className = 'lightbox';
-  lb.id = 'lightbox';
-  lb.innerHTML = '<button class="lightbox-close" onclick="closeLightbox()">✕</button>' +
-    '<button class="lightbox-nav lightbox-prev" id="lb-prev">‹</button>' +
-    '<button class="lightbox-nav lightbox-next" id="lb-next">›</button>' +
-    '<img id="lb-img" src="" alt="">' +
-    '<div class="lightbox-caption" id="lb-caption"></div>';
-  document.body.appendChild(lb);
-}
+      const lb = document.createElement('div');
+      lb.className = 'lightbox';
+      lb.id = 'lightbox';
+      lb.innerHTML = '<button class="lightbox-close" onclick="closeLightbox()">✕</button>' +
+        '<img id="lb-img" src="" alt="">' +
+        '<div class="lightbox-hint">← اسحب يمين أو يسار للتنقل →</div>' +
+        '<div class="lightbox-caption" id="lb-caption"></div>';
+      document.body.appendChild(lb);
+    }
 
-// ============================================
-// SETUP LIGHTBOX EVENTS
-// ============================================
-document.addEventListener('DOMContentLoaded', () => {
-  ensureLightbox();
+    // ============================================
+    // SWIPE GESTURES
+    // ============================================
+    let _touchStartX = 0;
+    let _touchStartY = 0;
 
-  const lb = document.getElementById('lightbox');
-  const lbNext = document.getElementById('lb-next');
-  const lbPrev = document.getElementById('lb-prev');
+    function setupSwipe() {
+      const lb = document.getElementById('lightbox');
+      if (!lb) return;
 
-  if (lbNext) lbNext.addEventListener('click', nextImage);
-  if (lbPrev) lbPrev.addEventListener('click', prevImage);
+      lb.addEventListener('touchstart', (e) => {
+        _touchStartX = e.changedTouches[0].screenX;
+        _touchStartY = e.changedTouches[0].screenY;
+      }, { passive: true });
 
-  if (lb) {
-    lb.addEventListener('click', (e) => {
-      if (e.target.id === 'lightbox') closeLightbox();
-    });
-  }
+      lb.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].screenX - _touchStartX;
+        const dy = e.changedTouches[0].screenY - _touchStartY;
 
-  document.addEventListener('keydown', (e) => {
-    if (!lb || !lb.classList.contains('open')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight') nextImage();
-    if (e.key === 'ArrowLeft') prevImage();
-  });
-});
+        // Ignore vertical scrolls
+        if (Math.abs(dx) < Math.abs(dy)) return;
+        if (Math.abs(dx) < 50) return;
+
+        if (dx < 0) {
+          nextImage();   // Swipe left → next
+        } else {
+          prevImage();   // Swipe right → prev
+        }
+      }, { passive: true });
+    }
+
+    // ============================================
+    // SETUP LIGHTBOX EVENTS
+    // ============================================
+    function setupLightboxEvents() {
+      const lb = document.getElementById('lightbox');
+      if (!lb) return;
+
+      lb.addEventListener('click', (e) => {
+        if (e.target.id === 'lightbox') closeLightbox();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+      });
+    }
   </script>
 
 </body>
