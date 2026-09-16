@@ -227,9 +227,13 @@ function renderHeader(containerId = 'app-header') {
   <a href="login.html">${t('nav.login')}</a>
   <a href="register.html">${t('nav.register')}</a>
 
-  <div class="menu-settings">
-    <div class="menu-settings-title">⚙️ ${isAr ? 'الإعدادات' : 'Settings'}</div>
+<div class="menu-settings">
+  <div class="menu-settings-title" id="menu-settings-toggle">
+    <span>⚙️ ${isAr ? 'الإعدادات' : 'Settings'}</span>
+    <span class="menu-settings-arrow" id="menu-settings-arrow">▼</span>
+  </div>
 
+  <div class="menu-settings-body" id="menu-settings-body" style="display:none;">
     <div class="menu-setting">
       <label>${isAr ? 'العملة' : 'Currency'}</label>
       <select id="menu-currency" class="menu-select">
