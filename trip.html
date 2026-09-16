@@ -280,22 +280,24 @@
   cursor: pointer;
   border: none;
 }
-.lightbox-nav {
+..lightbox-nav {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
-  font-size: 28px;
+  width: 60px;
+  height: 60px;
+  font-size: 40px;
+  font-weight: bold;
   border-radius: 50%;
-  background: rgba(0,0,0,0.6);
-  border: 2px solid rgba(255,255,255,0.9);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  color: white;
+  background: white;
+  color: #DC2626;
+  border: 3px solid #DC2626;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 100;
 }
 .lightbox-prev {
   left: 16px;
