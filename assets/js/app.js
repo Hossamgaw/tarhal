@@ -284,16 +284,122 @@ function renderHeader(containerId = 'app-header') {
   `;
 
   // Locale toggle
-  document.getElementById('locale-toggle')?.addEventListener('click', () => {
-    const newLocale = getLocale() === 'ar' ? 'en' : 'ar';
-    setLocale(newLocale);
-    window.location.reload();
-  });
+  // Locale toggle
+document.getElementById('locale-toggle')?.addEventListener('click', () => {
+  const newLocale = getLocale() === 'ar' ? 'en' : 'ar';
+  setLocale(newLocale);
+  window.location.reload();
+});
 
-  // Mobile menu toggle
-  document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
-    const menu = document.getElementById('mobile-menu');
-    if (menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+// Mobile menu toggle
+document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+  const menu = document.getElementById('mobile-menu');
+  if (menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+});
+
+// ============================================
+// MENU SETTINGS — Toggle Open/Close
+// ============================================
+const settingsToggle = document.getElementById('menu-settings-toggle');
+const settingsBody = document.getElementById('menu-settings-body');
+
+if (settingsToggle && settingsBody) {
+  settingsToggle.addEventListener('click', () => {
+    const isOpen = settingsBody.style.display !== 'none';
+    settingsBody.style.display = isOpen ? 'none' : 'block';
+    settingsToggle.classList.toggle('open', !isOpen);
+  });
+}
+
+// ============================================
+// CURRENCY SELECTOR
+// ============================================
+const currencySelect = document.getElementById('menu-currency');
+if (currencySelect) {
+  currencySelect.value = getCurrency();
+
+  currencySelect.addEventListener('change', (e) => {
+    const newCurrency = e.target.value;
+    setCurrency(newCurrency);
+
+    const countryMap = {
+      EGP: 'EG', SAR: 'SA', AED: 'AE', KWD: 'KW',
+      QAR: 'QA', USD: 'US', EUR: 'DE', GBP: 'GB', TRY: 'TR',
+    };
+    if (countryMap[newCurrency]) {
+      localStorage.setItem('tarhal_user_country_code', countryMap[newCurrency]);
+      const countrySel = document.getElementById('menu-country');
+      if (countrySel) countrySel.value = countryMap[newCurrency];
+    }
+
+    if (typeof showToast === 'function') {
+      showToast(isRTL() ? 'تم تغيير العملة ✅' : 'Currency updated ✅', 'success');
+    }
+
+    setTimeout(() => window.location.reload(), 800);
+  });
+}
+
+// ============================================
+// COUNTRY SELECTOR
+// ============================================
+const countrySelect = document.getElementById('menu-country');
+if (countrySelect) {
+  const savedCountry = localStorage.getItem('tarhal_user_country_code');
+  if (savedCountry) countrySelect.value = savedCountry;
+
+  countrySelect.addEventListener('change', (e) => {
+    const newCountry = e.target.value;
+    localStorage.setItem('tarhal_user_country_code', newCountry);
+
+    const currencyMap = {
+      EG: 'EGP', SA: 'SAR', AE: 'AED', KW: 'KWD', QA: 'QAR',
+      BH: 'BHD', OM: 'OMR', JO: 'JOD', LB: 'LBP', IQ: 'IQD',
+      MA: 'MAD', DZ: 'DZD', TN: 'TND', LY: 'LYD', SD: 'SDG',
+      TR: 'TRY', GB: 'GBP', FR: 'EUR', DE: 'EUR', US: 'USD',
+    };
+    if (currencyMap[newCountry]) {
+      setCurrency(currencyMap[newCountry]);
+      if (currencySelect) currencySelect.value = currencyMap[newCountry];
+    }
+
+    if (typeof showToast === 'function') {
+      showToast(isRTL() ? 'تم تغيير الدولة ✅' : 'Location updated ✅', 'success');
+    }
+
+    setTimeout(() => window.location.reload(), 800);
+  });
+}
+
+// ============================================
+// DETECT LOCATION BUTTON
+// ============================================
+const locateBtn = document.getElementById('menu-locate-btn');
+if (locateBtn) {
+  locateBtn.addEventListener('click', async () => {
+    locateBtn.textContent = isRTL() ? '⏳ جاري الكشف...' : '⏳ Detecting...';
+    locateBtn.disabled = true;
+
+    try {
+      const detected = await detectUserCountry();
+      if (detected && detected.country) {
+        localStorage.setItem('tarhal_user_country_code', detected.country);
+        setCurrency(detected.currency);
+
+        if (typeof showToast === 'function') {
+          showToast(isRTL() ? 'تم كشف موقعك ✅' : 'Location detected ✅', 'success');
+        }
+        setTimeout(() => window.location.reload(), 800);
+      } else {
+        throw new Error('No country detected');
+      }
+    } catch (err) {
+      locateBtn.textContent = isRTL() ? '📍 اكشف موقعي تلقائيًا' : '📍 Detect my location';
+      locateBtn.disabled = false;
+      if (typeof showToast === 'function') {
+        showToast(isRTL() ? 'فشل كشف الموقع، جرب تاني' : 'Detection failed, try again', 'error');
+      }
+    }
   });
 }
 
