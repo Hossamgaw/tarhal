@@ -42,81 +42,67 @@ function isRTL() {
 // ============== CURRENCIES (Global) ==============
 const CURRENCIES = {
   // Middle East
-  EGP: { symbol: '£', nameAr: 'جنيه مصري', nameEn: 'Egyptian Pound' },
-  SAR: { symbol: '﷼', nameAr: 'ريال سعودي', nameEn: 'Saudi Riyal' },
-  AED: { symbol: 'د.إ', nameAr: 'درهم إماراتي', nameEn: 'UAE Dirham' },
-  KWD: { symbol: 'د.ك', nameAr: 'دينار كويتي', nameEn: 'Kuwaiti Dinar' },
-  QAR: { symbol: 'ر.ق', nameAr: 'ريال قطري', nameEn: 'Qatari Riyal' },
-  BHD: { symbol: '.د.ب', nameAr: 'دينار بحريني', nameEn: 'Bahraini Dinar' },
-  OMR: { symbol: 'ر.ع', nameAr: 'ريال عُماني', nameEn: 'Omani Rial' },
-  JOD: { symbol: 'د.أ', nameAr: 'دينار أردني', nameEn: 'Jordanian Dinar' },
-  LBP: { symbol: 'ل.ل', nameAr: 'ليرة لبنانية', nameEn: 'Lebanese Pound' },
-  IQD: { symbol: 'ع.د', nameAr: 'دينار عراقي', nameEn: 'Iraqi Dinar' },
-  SYP: { symbol: 'ل.س', nameAr: 'ليرة سورية', nameEn: 'Syrian Pound' },
-  YER: { symbol: '﷼', nameAr: 'ريال يمني', nameEn: 'Yemeni Rial' },
-  ILS: { symbol: '₪', nameAr: 'شيكل', nameEn: 'Israeli Shekel' },
+  EGP: { symbol: '£', codeAr: 'ج.م', nameAr: 'جنيه مصري', nameEn: 'Egyptian Pound' },
+  SAR: { symbol: '﷼', codeAr: 'ر.س', nameAr: 'ريال سعودي', nameEn: 'Saudi Riyal' },
+  AED: { symbol: 'د.إ', codeAr: 'د.إ', nameAr: 'درهم إماراتي', nameEn: 'UAE Dirham' },
+  KWD: { symbol: 'د.ك', codeAr: 'د.ك', nameAr: 'دينار كويتي', nameEn: 'Kuwaiti Dinar' },
+  QAR: { symbol: 'ر.ق', codeAr: 'ر.ق', nameAr: 'ريال قطري', nameEn: 'Qatari Riyal' },
+  BHD: { symbol: 'د.ب', codeAr: 'د.ب', nameAr: 'دينار بحريني', nameEn: 'Bahraini Dinar' },
+  OMR: { symbol: 'ر.ع', codeAr: 'ر.ع', nameAr: 'ريال عُماني', nameEn: 'Omani Rial' },
+  JOD: { symbol: 'د.أ', codeAr: 'د.أ', nameAr: 'دينار أردني', nameEn: 'Jordanian Dinar' },
+  LBP: { symbol: 'ل.ل', codeAr: 'ل.ل', nameAr: 'ليرة لبنانية', nameEn: 'Lebanese Pound' },
+  IQD: { symbol: 'ع.د', codeAr: 'ع.د', nameAr: 'دينار عراقي', nameEn: 'Iraqi Dinar' },
+  SYP: { symbol: 'ل.س', codeAr: 'ل.س', nameAr: 'ليرة سورية', nameEn: 'Syrian Pound' },
+  YER: { symbol: '﷼', codeAr: 'ر.ي', nameAr: 'ريال يمني', nameEn: 'Yemeni Rial' },
 
   // North Africa
-  LYD: { symbol: 'ل.د', nameAr: 'دينار ليبي', nameEn: 'Libyan Dinar' },
-  TND: { symbol: 'د.ت', nameAr: 'دينار تونسي', nameEn: 'Tunisian Dinar' },
-  DZD: { symbol: 'د.ج', nameAr: 'دينار جزائري', nameEn: 'Algerian Dinar' },
-  MAD: { symbol: 'د.م', nameAr: 'درهم مغربي', nameEn: 'Moroccan Dirham' },
-  SDG: { symbol: 'ج.س', nameAr: 'جنيه سوداني', nameEn: 'Sudanese Pound' },
+  LYD: { symbol: 'ل.د', codeAr: 'ل.د', nameAr: 'دينار ليبي', nameEn: 'Libyan Dinar' },
+  TND: { symbol: 'د.ت', codeAr: 'د.ت', nameAr: 'دينار تونسي', nameEn: 'Tunisian Dinar' },
+  DZD: { symbol: 'د.ج', codeAr: 'د.ج', nameAr: 'دينار جزائري', nameEn: 'Algerian Dinar' },
+  MAD: { symbol: 'د.م', codeAr: 'د.م', nameAr: 'درهم مغربي', nameEn: 'Moroccan Dirham' },
+  SDG: { symbol: 'ج.س', codeAr: 'ج.س', nameAr: 'جنيه سوداني', nameEn: 'Sudanese Pound' },
 
   // Turkey & Asia
-  TRY: { symbol: '₺', nameAr: 'ليرة تركية', nameEn: 'Turkish Lira' },
-  MYR: { symbol: 'RM', nameAr: 'رينغيت ماليزي', nameEn: 'Malaysian Ringgit' },
-  IDR: { symbol: 'Rp', nameAr: 'روبية إندونيسية', nameEn: 'Indonesian Rupiah' },
-  MVR: { symbol: 'Rf', nameAr: 'روفيا مالديفية', nameEn: 'Maldivian Rufiyaa' },
-  THB: { symbol: '฿', nameAr: 'بات تايلاندي', nameEn: 'Thai Baht' },
-  SGD: { symbol: 'S$', nameAr: 'دولار سنغافوري', nameEn: 'Singapore Dollar' },
-  JPY: { symbol: '¥', nameAr: 'ين ياباني', nameEn: 'Japanese Yen' },
-  CNY: { symbol: '¥', nameAr: 'يوان صيني', nameEn: 'Chinese Yuan' },
-  KRW: { symbol: '₩', nameAr: 'وون كوري', nameEn: 'Korean Won' },
-  INR: { symbol: '₹', nameAr: 'روبية هندية', nameEn: 'Indian Rupee' },
-  PKR: { symbol: '₨', nameAr: 'روبية باكستانية', nameEn: 'Pakistani Rupee' },
+  TRY: { symbol: '₺', codeAr: 'ل.ت', nameAr: 'ليرة تركية', nameEn: 'Turkish Lira' },
+  MYR: { symbol: 'RM', codeAr: 'RM', nameAr: 'رينغيت ماليزي', nameEn: 'Malaysian Ringgit' },
+  IDR: { symbol: 'Rp', codeAr: 'Rp', nameAr: 'روبية إندونيسية', nameEn: 'Indonesian Rupiah' },
+  MVR: { symbol: 'Rf', codeAr: 'Rf', nameAr: 'روفيا مالديفية', nameEn: 'Maldivian Rufiyaa' },
+  THB: { symbol: '฿', codeAr: '฿', nameAr: 'بات تايلاندي', nameEn: 'Thai Baht' },
+  SGD: { symbol: 'S$', codeAr: 'S$', nameAr: 'دولار سنغافوري', nameEn: 'Singapore Dollar' },
+  JPY: { symbol: '¥', codeAr: '¥', nameAr: 'ين ياباني', nameEn: 'Japanese Yen' },
+  CNY: { symbol: '¥', codeAr: '¥', nameAr: 'يوان صيني', nameEn: 'Chinese Yuan' },
+  KRW: { symbol: '₩', codeAr: '₩', nameAr: 'وون كوري', nameEn: 'Korean Won' },
+  INR: { symbol: '₹', codeAr: '₹', nameAr: 'روبية هندية', nameEn: 'Indian Rupee' },
+  PKR: { symbol: '₨', codeAr: '₨', nameAr: 'روبية باكستانية', nameEn: 'Pakistani Rupee' },
 
   // Europe
-  EUR: { symbol: '€', nameAr: 'يورو', nameEn: 'Euro' },
-  GBP: { symbol: '£', nameAr: 'جنيه إسترليني', nameEn: 'British Pound' },
-  CHF: { symbol: 'Fr', nameAr: 'فرنك سويسري', nameEn: 'Swiss Franc' },
-  SEK: { symbol: 'kr', nameAr: 'كرونة سويدية', nameEn: 'Swedish Krona' },
-  NOK: { symbol: 'kr', nameAr: 'كرونة نرويجية', nameEn: 'Norwegian Krone' },
-  RUB: { symbol: '₽', nameAr: 'روبل روسي', nameEn: 'Russian Ruble' },
-  AZN: { symbol: '₼', nameAr: 'مانات أذربيجاني', nameEn: 'Azerbaijani Manat' },
-  GEL: { symbol: '₾', nameAr: 'لاري جورجي', nameEn: 'Georgian Lari' },
+  EUR: { symbol: '€', codeAr: '€', nameAr: 'يورو', nameEn: 'Euro' },
+  GBP: { symbol: '£', codeAr: '£', nameAr: 'جنيه إسترليني', nameEn: 'British Pound' },
+  CHF: { symbol: 'Fr', codeAr: 'Fr', nameAr: 'فرنك سويسري', nameEn: 'Swiss Franc' },
+  SEK: { symbol: 'kr', codeAr: 'kr', nameAr: 'كرونة سويدية', nameEn: 'Swedish Krona' },
+  NOK: { symbol: 'kr', codeAr: 'kr', nameAr: 'كرونة نرويجية', nameEn: 'Norwegian Krone' },
+  RUB: { symbol: '₽', codeAr: '₽', nameAr: 'روبل روسي', nameEn: 'Russian Ruble' },
+  AZN: { symbol: '₼', codeAr: '₼', nameAr: 'مانات أذربيجاني', nameEn: 'Azerbaijani Manat' },
+  GEL: { symbol: '₾', codeAr: '₾', nameAr: 'لاري جورجي', nameEn: 'Georgian Lari' },
 
   // Americas
-  USD: { symbol: '$', nameAr: 'دولار أمريكي', nameEn: 'US Dollar' },
-  CAD: { symbol: 'C$', nameAr: 'دولار كندي', nameEn: 'Canadian Dollar' },
-  BRL: { symbol: 'R$', nameAr: 'ريال برازيلي', nameEn: 'Brazilian Real' },
-  MXN: { symbol: '$', nameAr: 'بيزو مكسيكي', nameEn: 'Mexican Peso' },
-  ARS: { symbol: '$', nameAr: 'بيزو أرجنتيني', nameEn: 'Argentine Peso' },
+  USD: { symbol: '$', codeAr: '$', nameAr: 'دولار أمريكي', nameEn: 'US Dollar' },
+  CAD: { symbol: 'C$', codeAr: 'C$', nameAr: 'دولار كندي', nameEn: 'Canadian Dollar' },
+  BRL: { symbol: 'R$', codeAr: 'R$', nameAr: 'ريال برازيلي', nameEn: 'Brazilian Real' },
+  MXN: { symbol: '$', codeAr: 'MX$', nameAr: 'بيزو مكسيكي', nameEn: 'Mexican Peso' },
+  ARS: { symbol: '$', codeAr: 'AR$', nameAr: 'بيزو أرجنتيني', nameEn: 'Argentine Peso' },
 
   // Africa
-  ZAR: { symbol: 'R', nameAr: 'راند جنوب أفريقي', nameEn: 'South African Rand' },
-  KES: { symbol: 'KSh', nameAr: 'شلن كيني', nameEn: 'Kenyan Shilling' },
-  ETB: { symbol: 'Br', nameAr: 'بير إثيوبي', nameEn: 'Ethiopian Birr' },
-  NGN: { symbol: '₦', nameAr: 'نايرا نيجيري', nameEn: 'Nigerian Naira' },
-  TZS: { symbol: 'TSh', nameAr: 'شلن تنزاني', nameEn: 'Tanzanian Shilling' },
+  ZAR: { symbol: 'R', codeAr: 'R', nameAr: 'راند جنوب أفريقي', nameEn: 'South African Rand' },
+  KES: { symbol: 'KSh', codeAr: 'KSh', nameAr: 'شلن كيني', nameEn: 'Kenyan Shilling' },
+  ETB: { symbol: 'Br', codeAr: 'Br', nameAr: 'بير إثيوبي', nameEn: 'Ethiopian Birr' },
+  NGN: { symbol: '₦', codeAr: '₦', nameAr: 'نايرا نيجيري', nameEn: 'Nigerian Naira' },
+  TZS: { symbol: 'TSh', codeAr: 'TSh', nameAr: 'شلن تنزاني', nameEn: 'Tanzanian Shilling' },
 
   // Oceania
-  AUD: { symbol: 'A$', nameAr: 'دولار أسترالي', nameEn: 'Australian Dollar' },
-  NZD: { symbol: 'NZ$', nameAr: 'دولار نيوزيلندي', nameEn: 'New Zealand Dollar' },
+  AUD: { symbol: 'A$', codeAr: 'A$', nameAr: 'دولار أسترالي', nameEn: 'Australian Dollar' },
+  NZD: { symbol: 'NZ$', codeAr: 'NZ$', nameAr: 'دولار نيوزيلندي', nameEn: 'New Zealand Dollar' },
 };
-
-function getCurrency() {
-  return localStorage.getItem('currency') || 'EGP';
-}
-
-function setCurrency(code) {
-  if (!CURRENCIES[code]) return;
-  localStorage.setItem('currency', code);
-}
-
-function getCurrencyInfo(code) {
-  return CURRENCIES[code] || CURRENCIES.USD;
-}
 
 // ============== SUPABASE ==============
 // ⚠️ هنضيف القيم دي لاحقًا
