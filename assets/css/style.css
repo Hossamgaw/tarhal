@@ -1180,30 +1180,61 @@ ul {
   .trips-layout section {
     padding-inline: 12px;
   }
-/* ===== MOBILE ZOOM FIX ===== */
-@media (max-width: 640px) {
+/* ===== MOBILE HEADER FIX ===== */
+@media (max-width: 1024px) {
   .tarhal-header {
-    position: sticky !important;
     width: 100% !important;
     max-width: 100vw !important;
     overflow: hidden !important;
+    background: #FFFFFF !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
   .tarhal-header-inner {
-    flex-wrap: wrap !important;
-    padding: 8px 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 10px 12px !important;
     gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
   }
-  .tarhal-logo-text {
-    font-size: 18px !important;
-  }
-  .tarhal-header-actions {
-    flex-shrink: 1;
-    flex-wrap: wrap;
+  .tarhal-logo {
+    flex-shrink: 0 !important;
     gap: 6px !important;
   }
-  .tarhal-btn-primary-sm,
-  .tarhal-btn-text {
-    padding: 6px 10px !important;
+  .tarhal-logo svg {
+    width: 65px !important;
+    height: auto !important;
+  }
+  .tarhal-logo-text {
+    font-size: 16px !important;
+  }
+  .tarhal-nav-desktop {
+    display: none !important;
+  }
+  .tarhal-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+    flex-wrap: nowrap !important;
+  }
+  /* Hide login/register buttons on mobile (they're in mobile menu) */
+  .tarhal-auth-actions {
+    display: none !important;
+  }
+  .tarhal-user-actions {
+    display: none !important;
+  }
+  .tarhal-locale-btn {
+    width: 34px !important;
+    height: 34px !important;
     font-size: 12px !important;
+  }
+  .tarhal-mobile-menu-btn {
+    width: 38px !important;
+    height: 38px !important;
+    display: flex !important;
   }
 }
