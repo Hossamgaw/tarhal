@@ -20,6 +20,7 @@ function formatPrice(amount, currencyCode) {
   const code = isAr ? (info.codeAr || info.symbol) : currency;
   return `${formatted} ${code}`;
 }
+
 /**
  * Format date
  */
@@ -172,26 +173,20 @@ function renderHeader(containerId = 'app-header') {
 
   const locale = getLocale();
   const isAr = locale === 'ar';
-  const isHomePage = window.location.pathname.endsWith('index.html') ||
-                     window.location.pathname === '/' ||
-                     window.location.pathname.endsWith('/tarhal/');
 
   container.innerHTML = `
     <header class="tarhal-header">
       <div class="tarhal-header-inner">
-        <!-- Logo -->
         <a href="index.html" class="tarhal-logo" aria-label="Tarhal Home">
           ${getLogoSVG(90)}
           <span class="tarhal-logo-text">${isAr ? 'ترحال' : 'Tarhal'}</span>
         </a>
 
-        <!-- Desktop Nav -->
         <nav class="tarhal-nav-desktop">
           <a href="index.html">${t('nav.home')}</a>
           <a href="trips.html">${t('nav.trips')}</a>
         </nav>
 
-        <!-- Actions -->
         <div class="tarhal-header-actions">
           <button id="locale-toggle" class="tarhal-locale-btn" aria-label="Switch language">
             ${isAr ? 'EN' : 'ع'}
@@ -218,189 +213,193 @@ function renderHeader(containerId = 'app-header') {
         </div>
       </div>
 
-<!-- Mobile menu -->
-<div id="mobile-menu" class="tarhal-mobile-menu" style="display:none;">
-  <a href="index.html">${t('nav.home')}</a>
-  <a href="trips.html">${t('nav.trips')}</a>
-  <a href="my-trips.html">${t('nav.myTrips')}</a>
-  <a href="dashboard.html">${t('nav.dashboard')}</a>
-  <a href="login.html">${t('nav.login')}</a>
-  <a href="register.html">${t('nav.register')}</a>
+      <div id="mobile-menu" class="tarhal-mobile-menu" style="display:none;">
+        <a href="index.html">${t('nav.home')}</a>
+        <a href="trips.html">${t('nav.trips')}</a>
+        <a href="my-trips.html">${t('nav.myTrips')}</a>
+        <a href="dashboard.html">${t('nav.dashboard')}</a>
+        <a href="login.html">${t('nav.login')}</a>
+        <a href="register.html">${t('nav.register')}</a>
 
-<div class="menu-settings">
-  <div class="menu-settings-title" id="menu-settings-toggle">
-    <span>⚙️ ${isAr ? 'الإعدادات' : 'Settings'}</span>
-    <span class="menu-settings-arrow" id="menu-settings-arrow">▼</span>
-  </div>
+        <div class="menu-settings">
+          <div class="menu-settings-title" id="menu-settings-toggle">
+            <span>⚙️ ${isAr ? 'الإعدادات' : 'Settings'}</span>
+            <span class="menu-settings-arrow" id="menu-settings-arrow">▼</span>
+          </div>
 
-  <div class="menu-settings-body" id="menu-settings-body" style="display:none;">
-    <div class="menu-setting">
-      <label>${isAr ? 'العملة' : 'Currency'}</label>
-      <select id="menu-currency" class="menu-select">
-        <option value="EGP">🇪🇬 جنيه مصري (ج.م)</option>
-        <option value="SAR">🇸🇦 ريال سعودي (ر.س)</option>
-        <option value="AED">🇦🇪 درهم إماراتي (د.إ)</option>
-        <option value="KWD">🇰🇼 دينار كويتي (د.ك)</option>
-        <option value="QAR">🇶🇦 ريال قطري (ر.ق)</option>
-        <option value="USD">🇺🇸 دولار أمريكي ($)</option>
-        <option value="EUR">🇪🇺 يورو (€)</option>
-        <option value="GBP">🇬🇧 جنيه إسترليني (£)</option>
-        <option value="TRY">🇹🇷 ليرة تركية (ل.ت)</option>
-      </select>
-    </div>
+          <div class="menu-settings-body" id="menu-settings-body" style="display:none;">
+            <div class="menu-setting">
+              <label>${isAr ? 'العملة' : 'Currency'}</label>
+              <select id="menu-currency" class="menu-select">
+                <option value="EGP">🇪🇬 جنيه مصري (ج.م)</option>
+                <option value="SAR">🇸🇦 ريال سعودي (ر.س)</option>
+                <option value="AED">🇦🇪 درهم إماراتي (د.إ)</option>
+                <option value="KWD">🇰🇼 دينار كويتي (د.ك)</option>
+                <option value="QAR">🇶🇦 ريال قطري (ر.ق)</option>
+                <option value="USD">🇺🇸 دولار أمريكي ($)</option>
+                <option value="EUR">🇪🇺 يورو (€)</option>
+                <option value="GBP">🇬🇧 جنيه إسترليني (£)</option>
+                <option value="TRY">🇹🇷 ليرة تركية (ل.ت)</option>
+              </select>
+            </div>
 
-    <div class="menu-setting">
-      <label>${isAr ? 'الموقع' : 'Location'}</label>
-      <select id="menu-country" class="menu-select">
-        <option value="EG">🇪🇬 مصر</option>
-        <option value="SA">🇸🇦 السعودية</option>
-        <option value="AE">🇦🇪 الإمارات</option>
-        <option value="KW">🇰🇼 الكويت</option>
-        <option value="QA">🇶🇦 قطر</option>
-        <option value="BH">🇧🇭 البحرين</option>
-        <option value="OM">🇴🇲 عُمان</option>
-        <option value="JO">🇯🇴 الأردن</option>
-        <option value="LB">🇱🇧 لبنان</option>
-        <option value="IQ">🇮🇶 العراق</option>
-        <option value="MA">🇲🇦 المغرب</option>
-        <option value="DZ">🇩🇿 الجزائر</option>
-        <option value="TN">🇹🇳 تونس</option>
-        <option value="LY">🇱🇾 ليبيا</option>
-        <option value="SD">🇸🇩 السودان</option>
-        <option value="TR">🇹🇷 تركيا</option>
-        <option value="GB">🇬🇧 بريطانيا</option>
-        <option value="FR">🇫🇷 فرنسا</option>
-        <option value="DE">🇩🇪 ألمانيا</option>
-        <option value="US">🇺🇸 أمريكا</option>
-      </select>
-    </div>
+            <div class="menu-setting">
+              <label>${isAr ? 'الموقع' : 'Location'}</label>
+              <select id="menu-country" class="menu-select">
+                <option value="EG">🇪🇬 مصر</option>
+                <option value="SA">🇸🇦 السعودية</option>
+                <option value="AE">🇦🇪 الإمارات</option>
+                <option value="KW">🇰🇼 الكويت</option>
+                <option value="QA">🇶🇦 قطر</option>
+                <option value="BH">🇧🇭 البحرين</option>
+                <option value="OM">🇴🇲 عُمان</option>
+                <option value="JO">🇯🇴 الأردن</option>
+                <option value="LB">🇱🇧 لبنان</option>
+                <option value="IQ">🇮🇶 العراق</option>
+                <option value="MA">🇲🇦 المغرب</option>
+                <option value="DZ">🇩🇿 الجزائر</option>
+                <option value="TN">🇹🇳 تونس</option>
+                <option value="LY">🇱🇾 ليبيا</option>
+                <option value="SD">🇸🇩 السودان</option>
+                <option value="TR">🇹🇷 تركيا</option>
+                <option value="GB">🇬🇧 بريطانيا</option>
+                <option value="FR">🇫🇷 فرنسا</option>
+                <option value="DE">🇩🇪 ألمانيا</option>
+                <option value="US">🇺🇸 أمريكا</option>
+              </select>
+            </div>
 
-    <button id="menu-locate-btn" class="menu-locate-btn">
-      📍 ${isAr ? 'اكشف موقعي تلقائيًا' : 'Detect my location'}
-    </button>
-  </div>
-</div>
+            <button id="menu-locate-btn" class="menu-locate-btn">
+              📍 ${isAr ? 'اكشف موقعي تلقائيًا' : 'Detect my location'}
+            </button>
+          </div>
+        </div>
+      </div>
     </header>
   `;
 
-  // Locale toggle
-  // Locale toggle
-document.getElementById('locale-toggle')?.addEventListener('click', () => {
-  const newLocale = getLocale() === 'ar' ? 'en' : 'ar';
-  setLocale(newLocale);
-  window.location.reload();
-});
-
-// Mobile menu toggle
-document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
-  const menu = document.getElementById('mobile-menu');
-  if (menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-});
-
-// ============================================
-// MENU SETTINGS — Toggle Open/Close
-// ============================================
-const settingsToggle = document.getElementById('menu-settings-toggle');
-const settingsBody = document.getElementById('menu-settings-body');
-
-if (settingsToggle && settingsBody) {
-  settingsToggle.addEventListener('click', () => {
-    const isOpen = settingsBody.style.display !== 'none';
-    settingsBody.style.display = isOpen ? 'none' : 'block';
-    settingsToggle.classList.toggle('open', !isOpen);
+  // ============================================
+  // LOCALE TOGGLE
+  // ============================================
+  document.getElementById('locale-toggle')?.addEventListener('click', () => {
+    const newLocale = getLocale() === 'ar' ? 'en' : 'ar';
+    setLocale(newLocale);
+    window.location.reload();
   });
-}
 
-// ============================================
-// CURRENCY SELECTOR
-// ============================================
-const currencySelect = document.getElementById('menu-currency');
-if (currencySelect) {
-  currencySelect.value = getCurrency();
-
-  currencySelect.addEventListener('change', (e) => {
-    const newCurrency = e.target.value;
-    setCurrency(newCurrency);
-
-    const countryMap = {
-      EGP: 'EG', SAR: 'SA', AED: 'AE', KWD: 'KW',
-      QAR: 'QA', USD: 'US', EUR: 'DE', GBP: 'GB', TRY: 'TR',
-    };
-    if (countryMap[newCurrency]) {
-      localStorage.setItem('tarhal_user_country_code', countryMap[newCurrency]);
-      const countrySel = document.getElementById('menu-country');
-      if (countrySel) countrySel.value = countryMap[newCurrency];
-    }
-
-    if (typeof showToast === 'function') {
-      showToast(isRTL() ? 'تم تغيير العملة ✅' : 'Currency updated ✅', 'success');
-    }
-
-    setTimeout(() => window.location.reload(), 800);
+  // ============================================
+  // MOBILE MENU TOGGLE
+  // ============================================
+  document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+    const menu = document.getElementById('mobile-menu');
+    if (menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
   });
-}
 
-// ============================================
-// COUNTRY SELECTOR
-// ============================================
-const countrySelect = document.getElementById('menu-country');
-if (countrySelect) {
-  const savedCountry = localStorage.getItem('tarhal_user_country_code');
-  if (savedCountry) countrySelect.value = savedCountry;
+  // ============================================
+  // MENU SETTINGS — Toggle Open/Close
+  // ============================================
+  const settingsToggle = document.getElementById('menu-settings-toggle');
+  const settingsBody = document.getElementById('menu-settings-body');
 
-  countrySelect.addEventListener('change', (e) => {
-    const newCountry = e.target.value;
-    localStorage.setItem('tarhal_user_country_code', newCountry);
+  if (settingsToggle && settingsBody) {
+    settingsToggle.addEventListener('click', () => {
+      const isOpen = settingsBody.style.display !== 'none';
+      settingsBody.style.display = isOpen ? 'none' : 'block';
+      settingsToggle.classList.toggle('open', !isOpen);
+    });
+  }
 
-    const currencyMap = {
-      EG: 'EGP', SA: 'SAR', AE: 'AED', KW: 'KWD', QA: 'QAR',
-      BH: 'BHD', OM: 'OMR', JO: 'JOD', LB: 'LBP', IQ: 'IQD',
-      MA: 'MAD', DZ: 'DZD', TN: 'TND', LY: 'LYD', SD: 'SDG',
-      TR: 'TRY', GB: 'GBP', FR: 'EUR', DE: 'EUR', US: 'USD',
-    };
-    if (currencyMap[newCountry]) {
-      setCurrency(currencyMap[newCountry]);
-      if (currencySelect) currencySelect.value = currencyMap[newCountry];
-    }
+  // ============================================
+  // CURRENCY SELECTOR
+  // ============================================
+  const currencySelect = document.getElementById('menu-currency');
+  if (currencySelect) {
+    currencySelect.value = getCurrency();
 
-    if (typeof showToast === 'function') {
-      showToast(isRTL() ? 'تم تغيير الدولة ✅' : 'Location updated ✅', 'success');
-    }
+    currencySelect.addEventListener('change', (e) => {
+      const newCurrency = e.target.value;
+      setCurrency(newCurrency);
 
-    setTimeout(() => window.location.reload(), 800);
-  });
-}
-
-// ============================================
-// DETECT LOCATION BUTTON
-// ============================================
-const locateBtn = document.getElementById('menu-locate-btn');
-if (locateBtn) {
-  locateBtn.addEventListener('click', async () => {
-    locateBtn.textContent = isRTL() ? '⏳ جاري الكشف...' : '⏳ Detecting...';
-    locateBtn.disabled = true;
-
-    try {
-      const detected = await detectUserCountry();
-      if (detected && detected.country) {
-        localStorage.setItem('tarhal_user_country_code', detected.country);
-        setCurrency(detected.currency);
-
-        if (typeof showToast === 'function') {
-          showToast(isRTL() ? 'تم كشف موقعك ✅' : 'Location detected ✅', 'success');
-        }
-        setTimeout(() => window.location.reload(), 800);
-      } else {
-        throw new Error('No country detected');
+      const countryMap = {
+        EGP: 'EG', SAR: 'SA', AED: 'AE', KWD: 'KW',
+        QAR: 'QA', USD: 'US', EUR: 'DE', GBP: 'GB', TRY: 'TR',
+      };
+      if (countryMap[newCurrency]) {
+        localStorage.setItem('tarhal_user_country_code', countryMap[newCurrency]);
+        const countrySel = document.getElementById('menu-country');
+        if (countrySel) countrySel.value = countryMap[newCurrency];
       }
-    } catch (err) {
-      locateBtn.textContent = isRTL() ? '📍 اكشف موقعي تلقائيًا' : '📍 Detect my location';
-      locateBtn.disabled = false;
+
       if (typeof showToast === 'function') {
-        showToast(isRTL() ? 'فشل كشف الموقع، جرب تاني' : 'Detection failed, try again', 'error');
+        showToast(isRTL() ? 'تم تغيير العملة ✅' : 'Currency updated ✅', 'success');
       }
-    }
-  });
+
+      setTimeout(() => window.location.reload(), 800);
+    });
+  }
+
+  // ============================================
+  // COUNTRY SELECTOR
+  // ============================================
+  const countrySelect = document.getElementById('menu-country');
+  if (countrySelect) {
+    const savedCountry = localStorage.getItem('tarhal_user_country_code');
+    if (savedCountry) countrySelect.value = savedCountry;
+
+    countrySelect.addEventListener('change', (e) => {
+      const newCountry = e.target.value;
+      localStorage.setItem('tarhal_user_country_code', newCountry);
+
+      const currencyMap = {
+        EG: 'EGP', SA: 'SAR', AE: 'AED', KW: 'KWD', QA: 'QAR',
+        BH: 'BHD', OM: 'OMR', JO: 'JOD', LB: 'LBP', IQ: 'IQD',
+        MA: 'MAD', DZ: 'DZD', TN: 'TND', LY: 'LYD', SD: 'SDG',
+        TR: 'TRY', GB: 'GBP', FR: 'EUR', DE: 'EUR', US: 'USD',
+      };
+      if (currencyMap[newCountry]) {
+        setCurrency(currencyMap[newCountry]);
+        if (currencySelect) currencySelect.value = currencyMap[newCountry];
+      }
+
+      if (typeof showToast === 'function') {
+        showToast(isRTL() ? 'تم تغيير الدولة ✅' : 'Location updated ✅', 'success');
+      }
+
+      setTimeout(() => window.location.reload(), 800);
+    });
+  }
+
+  // ============================================
+  // DETECT LOCATION BUTTON
+  // ============================================
+  const locateBtn = document.getElementById('menu-locate-btn');
+  if (locateBtn) {
+    locateBtn.addEventListener('click', async () => {
+      locateBtn.textContent = isRTL() ? '⏳ جاري الكشف...' : '⏳ Detecting...';
+      locateBtn.disabled = true;
+
+      try {
+        const detected = await detectUserCountry();
+        if (detected && detected.country) {
+          localStorage.setItem('tarhal_user_country_code', detected.country);
+          setCurrency(detected.currency);
+
+          if (typeof showToast === 'function') {
+            showToast(isRTL() ? 'تم كشف موقعك ✅' : 'Location detected ✅', 'success');
+          }
+          setTimeout(() => window.location.reload(), 800);
+        } else {
+          throw new Error('No country detected');
+        }
+      } catch (err) {
+        locateBtn.textContent = isRTL() ? '📍 اكشف موقعي تلقائيًا' : '📍 Detect my location';
+        locateBtn.disabled = false;
+        if (typeof showToast === 'function') {
+          showToast(isRTL() ? 'فشل كشف الموقع، جرب تاني' : 'Detection failed, try again', 'error');
+        }
+      }
+    });
+  }
 }
 
 // ============== FOOTER ==============
@@ -448,10 +447,8 @@ function renderFooter(containerId = 'app-footer') {
 
 /**
  * Check current auth state (placeholder until Supabase is connected)
- * For now, always returns null (not logged in)
  */
 function getCurrentUser() {
-  // TODO: Will be replaced with real Supabase auth
   const mockUser = localStorage.getItem('tarhal_mock_user');
   return mockUser ? JSON.parse(mockUser) : null;
 }
@@ -474,7 +471,6 @@ function updateAuthUI() {
     userActions.style.display = 'none';
   }
 
-  // Logout button
   document.getElementById('logout-btn')?.addEventListener('click', () => {
     localStorage.removeItem('tarhal_mock_user');
     showToast(t('auth.logoutSuccess'));
@@ -494,26 +490,17 @@ function initApp(options = {}) {
     withAuthCheck = true,
   } = options;
 
-  // Apply locale direction
   const locale = getLocale();
   document.documentElement.lang = locale;
   document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
 
-  // Render header
   if (withHeader) renderHeader();
-
-  // Render footer
   if (withFooter) renderFooter();
-
-  // Update auth UI
   if (withAuthCheck) updateAuthUI();
 }
 
-// ============== MOCK DATA (للمرحلة القادمة) ==============
+// ============== MOCK DATA ==============
 
-/**
- * Temporary mock data - will be replaced with Supabase
- */
 const MOCK_TRIPS = [
   {
     id: '1',
