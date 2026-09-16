@@ -910,15 +910,18 @@ let currentAlbumIndex = 0;
 let currentPhotoIndex = 0;
 
 function openLightbox(albumIndex, photoIndex) {
+  const lb = document.getElementById('lightbox');
+  if (!lb) return;
   currentAlbumIndex = albumIndex;
   currentPhotoIndex = photoIndex;
   updateLightbox();
-  document.getElementById('lightbox').classList.add('open');
+  lb.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
 function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
+  const lb = document.getElementById('lightbox');
+  if (lb) lb.classList.remove('open');
   document.body.style.overflow = '';
 }
 
@@ -957,6 +960,50 @@ function prevImage() {
   currentPhotoIndex = (currentPhotoIndex - 1 + album.photos.length) % album.photos.length;
   updateLightbox();
 }
+
+// ============================================
+// CREATE LIGHTBOX DYNAMICALLY
+// ============================================
+function ensureLightbox() {
+  if (document.getElementById('lightbox')) return;
+
+  const lb = document.createElement('div');
+  lb.className = 'lightbox';
+  lb.id = 'lightbox';
+  lb.innerHTML = '<button class="lightbox-close" onclick="closeLightbox()">✕</button>' +
+    '<button class="lightbox-nav lightbox-prev" id="lb-prev">‹</button>' +
+    '<button class="lightbox-nav lightbox-next" id="lb-next">›</button>' +
+    '<img id="lb-img" src="" alt="">' +
+    '<div class="lightbox-caption" id="lb-caption"></div>';
+  document.body.appendChild(lb);
+}
+
+// ============================================
+// SETUP LIGHTBOX EVENTS
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+  ensureLightbox();
+
+  const lb = document.getElementById('lightbox');
+  const lbNext = document.getElementById('lb-next');
+  const lbPrev = document.getElementById('lb-prev');
+
+  if (lbNext) lbNext.addEventListener('click', nextImage);
+  if (lbPrev) lbPrev.addEventListener('click', prevImage);
+
+  if (lb) {
+    lb.addEventListener('click', (e) => {
+      if (e.target.id === 'lightbox') closeLightbox();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (!lb || !lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'ArrowLeft') prevImage();
+  });
+});
   </script>
 
 </body>
